@@ -44,7 +44,8 @@ class GenericFileFilter:
 
             if self.gui_handler.original:
                 with ui.expansion(
-                    'Filters',
+                    'Search',
+                    icon='search',
                     value=self.expand['search'],
                     on_value_change=lambda e: self.expand.update({'search': e.value}),
                 ).classes('w-full'):
@@ -54,6 +55,7 @@ class GenericFileFilter:
             if self.gui_handler.search:
                 with ui.expansion(
                     'File Modifications',
+                    icon='description',
                     value=self.expand['file_modifications'],
                     on_value_change=lambda e: self.expand.update({'file_modifications': e.value}),
                 ).classes('w-full'):
@@ -64,15 +66,16 @@ class GenericFileFilter:
                 with ui.expansion(
                     'Folder Modifications',
                     value=self.expand['folder_modifications'],
+                    icon='folder',
                     on_value_change=lambda e: self.expand.update({'folder_modifications': e.value}),
                 ).classes('w-full'):
                     self.folder_mod_widget.get_widget()
                     ui.button('Apply', on_click=self.process_folder_mods)
 
             if self.gui_handler.folder_modifications:
-                with ui.expansion('Final', value=True, on_value_change=None).classes('w-full'):
+                with ui.expansion('Final', icon='file_download', value=True, on_value_change=None).classes('w-full'):
                     ui.button('Set Destination', icon='output', on_click=self.pick_destination).classes('w-full')
-                    ui.button('Execute', icon='play_arrow', on_click=self.execute).classes('w-full')
+                    ui.button('Export', icon='play_arrow', on_click=self.execute).classes('w-full')
 
     def tree_view(self):
         """Tree view"""
