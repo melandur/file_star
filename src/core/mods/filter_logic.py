@@ -2,36 +2,32 @@ import copy
 import os
 import shutil
 
-from core import Handler
-from core.mods.file.file_mod_logic import (
-    add_file_prefix_suffix,  # needed for file_modifications
-)
-from core.mods.file.file_mod_logic import (
+from src.core.handler import Handler
+from src.core.mods.file.file_mod_logic import (  # needed for file_modifications
+    add_file_prefix_suffix,
     new_file_name,
     replace_file_name_parts,
     split_file_name_parts,
 )
-from core.mods.folder.folder_mod_logic import (
-    add_folder_prefix_suffix,  # needed for new_folder_modifications
-)
-from core.mods.folder.folder_mod_logic import (
+from src.core.mods.folder.folder_mod_logic import (  # needed for new_folder_modifications
+    add_folder_prefix_suffix,
     find_folder_by_level,
     find_folder_by_name,
     new_folder_name,
     replace_folder_name_parts,
     split_folder_name_parts,
 )
-from core.mods.search import FolderNames  # needed for search
-from core.mods.search import (
+from src.core.mods.search import (
     Extension,
     FileName,
+    FolderNames,
     SearchFilter,
     check_for_inactive_search,
     check_search_collisions,
     create_search_statements,
 )
-from core.subjects.filters_iterator import FiltersIterator
-from core.subjects.subjects_iterator import SubjectsIterator
+from src.core.subjects.filters_iterator import FiltersIterator
+from src.core.subjects.subjects_iterator import SubjectsIterator
 
 
 class FilterLogic(Handler):
@@ -93,9 +89,9 @@ class FilterLogic(Handler):
                 tmp_subject.new_extension = subject.extension
                 tmp_subject.new_file_path_rel = subject.file_path_rel
 
-                for mod in self.file_modifications[filter_name]:
-                    if self.file_modifications[filter_name][mod]:
-                        tmp_subject = eval(mod)(tmp_subject, self.file_modifications[filter_name][mod])
+                for mod_name in self.file_modifications[filter_name]:
+                    if self.file_modifications[filter_name][mod_name]:
+                        tmp_subject = eval(mod_name)(tmp_subject, self.file_modifications[filter_name][mod_name])
 
                 subjects_per_filter.append(tmp_subject)
             filters_iter[filter_name] = SubjectsIterator(subjects_per_filter)
@@ -121,24 +117,24 @@ class FilterLogic(Handler):
 
                 tmp_folder_path = []
                 for folder_struct in self.folder_modifications[filter_name]:
-                    for mod in self.folder_modifications[filter_name][folder_struct]:
-                        if self.folder_modifications[filter_name][folder_struct][mod]:
-                            tmp_subject = eval(mod)(
-                                tmp_subject, self.folder_modifications[filter_name][folder_struct][mod]
+                    tmp_subject.new_folder_path_rel = None
+                    for mod_name in self.folder_modifications[filter_name][folder_struct]:
+                        if self.folder_modifications[filter_name][folder_struct][mod_name]:
+                            tmp_subject = eval(mod_name)(
+                                tmp_subject, self.folder_modifications[filter_name][folder_struct][mod_name]
                             )
-                            if tmp_subject:
-                                if hasattr(tmp_subject, 'new_folder_path_rel'):
-                                    tmp_folder_path.append(tmp_subject.new_folder_path_rel)
 
-                if tmp_folder_path:
-                    subject.new_folder_path_rel = os.path.join(*tmp_folder_path)  # new folder path
-                    file_name = f'{subject.new_file_name}.{subject.new_extension}'
-                    subject.new_file_path_rel = os.path.join(subject.new_folder_path_rel, file_name)  # file path
+                    if tmp_subject.new_folder_path_rel:
+                        tmp_folder_path.append(tmp_subject.new_folder_path_rel)
 
-                if subject.new_folder_path_rel is None:  # if no new file name is set, use the old one
-                    subject.new_folder_path_rel = subject.folder_path_rel
+                if tmp_folder_path:  # if tmp_folder_path is not empty create new folder path rel
+                    tmp_subject.new_folder_path_rel = os.path.join(*tmp_folder_path)
+                    file_name = f'{tmp_subject.new_file_name}.{tmp_subject.new_extension}'
+                    tmp_subject.new_file_path_rel = os.path.join(tmp_subject.new_folder_path_rel, file_name)
+                    subjects_per_filter.append(tmp_subject)
+                else:
+                    subjects_per_filter.append(subject)
 
-                subjects_per_filter.append(subject)
             filters_iter[filter_name] = SubjectsIterator(subjects_per_filter)
 
         return filters_iter
@@ -159,7 +155,4 @@ class FilterLogic(Handler):
                 os.makedirs(new_folder_path_abs, exist_ok=True)
                 new_file_name = f'{subject.new_file_name}.{subject.new_extension}'
                 new_file_path_abs = os.path.join(new_folder_path_abs, new_file_name)
-                print(new_file_path_abs)
                 shutil.copy(subject.file_path_abs, new_file_path_abs)
-                if not os.path.exists(new_file_path_abs):
-                    print(f'File {new_file_path_abs} does not exist.')

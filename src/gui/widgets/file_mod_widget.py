@@ -2,7 +2,7 @@ import copy
 
 from nicegui import ui
 
-from core.mods.filter_logic import FilterLogic
+from src.core.mods.filter_logic import FilterLogic
 
 
 class CurrentTab:
@@ -134,7 +134,7 @@ class FileModWidget(FilterLogic):
                 if self.file_modifications[filter_name][mod_name] is not True
                 else None,
                 on_change=lambda x, e=(filter_name, mod_name, 'name'): helper(*e, x.value),
-            ).classes('w-full')
+            ).classes('w-full no-wrap')
         return card
 
     def get_replace_mask(self, filter_name, mod_name):

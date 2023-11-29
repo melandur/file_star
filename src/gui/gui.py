@@ -1,10 +1,13 @@
 from nicegui import ui
 
-from core import FilterLogic, FiltersHandler, FiltersIterator, SubjectCreator
-from gui import (
+from src.core.mods.filter_logic import FilterLogic
+from src.core.subjects.filters_handler import FiltersHandler
+from src.core.subjects.filters_iterator import FiltersIterator
+from src.core.subjects.subject_creator import SubjectCreator
+from src.gui.gui_handler import GuiHandler
+from src.gui.widgets import (
     FileModWidget,
     FolderModWidget,
-    GuiHandler,
     LocalFolderPicker,
     SearchWidget,
 )
@@ -36,7 +39,7 @@ class GenericFileFilter:
 
     @ui.refreshable
     def left_drawer(self):
-        with ui.left_drawer().classes('bg-blue-100 w-full h-full').props('width=500'):
+        with ui.left_drawer().classes('bg-blue-100 w-full h-full').props('width=400'):
             ui.button('Set Source', icon='input', on_click=self.pick_source).classes('w-full')
 
             if self.gui_handler.original:

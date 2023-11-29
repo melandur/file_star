@@ -2,7 +2,7 @@ import copy
 
 from nicegui import ui
 
-from core.mods.filter_logic import FilterLogic
+from src.core.mods.filter_logic import FilterLogic
 
 
 class CurrentTab:
@@ -41,7 +41,7 @@ class FolderModWidget(FilterLogic):
             'find_folder_by_level': False,
             'find_folder_by_name': False,
             'new_folder_name': False,
-            'strip_folder_name_parts': None,
+            'split_folder_name_parts': None,
             'replace_folder_name_parts': None,
             'add_folder_prefix_suffix': None,
         }
@@ -91,14 +91,14 @@ class FolderModWidget(FilterLogic):
                 for mod_name in ['find_folder_by_name', 'new_folder_name']:
                     self.folder_modifications[filter_name][folder_struct][mod_name] = None
 
-                for mod_name in ['strip_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
+                for mod_name in ['split_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
                     if mod_name in self.folder_modifications[filter_name][folder_struct]:
                         self.folder_modifications[filter_name][folder_struct][mod_name] = False
             else:
                 for mod_name in ['find_folder_by_name', 'new_folder_name']:
                     self.folder_modifications[filter_name][folder_struct][mod_name] = False
 
-                for mod_name in ['strip_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
+                for mod_name in ['split_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
                     if mod_name in self.folder_modifications[filter_name][folder_struct]:
                         self.folder_modifications[filter_name][folder_struct][mod_name] = None
 
@@ -108,7 +108,7 @@ class FolderModWidget(FilterLogic):
                     if mod_name in self.folder_modifications[filter_name][folder_struct]:
                         self.folder_modifications[filter_name][folder_struct][mod_name] = None
 
-                for mod_name in ['strip_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
+                for mod_name in ['split_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
                     if mod_name in self.folder_modifications[filter_name][folder_struct]:
                         self.folder_modifications[filter_name][folder_struct][mod_name] = False
             else:
@@ -116,7 +116,7 @@ class FolderModWidget(FilterLogic):
                     if mod_name in self.folder_modifications[filter_name][folder_struct]:
                         self.folder_modifications[filter_name][folder_struct][mod_name] = False
 
-                for mod_name in ['strip_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
+                for mod_name in ['split_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
                     if mod_name in self.folder_modifications[filter_name][folder_struct]:
                         self.folder_modifications[filter_name][folder_struct][mod_name] = None
 
@@ -125,7 +125,7 @@ class FolderModWidget(FilterLogic):
                 for mod_name in [
                     'find_folder_by_level',
                     'find_folder_by_name',
-                    'strip_folder_name_parts',
+                    'split_folder_name_parts',
                     'replace_folder_name_parts',
                     'add_folder_prefix_suffix',
                 ]:
@@ -145,7 +145,7 @@ class FolderModWidget(FilterLogic):
             'find_folder_by_level': 'Find folder by level',
             'find_folder_by_name': 'Find folder by name',
             'new_folder_name': 'Replace current folder name with new folder name',
-            'strip_folder_name_parts': 'Strip certain parts of folder name',
+            'split_folder_name_parts': 'Split certain parts of folder name',
             'replace_folder_name_parts': 'Replace certain parts of folder name with new parts',
             'add_folder_prefix_suffix': 'Add prefix and/or suffix to folder name',
         }
@@ -183,8 +183,8 @@ class FolderModWidget(FilterLogic):
             if mod_name == 'new_folder_name':
                 return self.new_folder_name_mask(filter_name, folder_struct, mod_name)
 
-            if mod_name == 'strip_folder_name_parts':
-                return self.get_strip_mask(filter_name, folder_struct, mod_name)
+            if mod_name == 'split_folder_name_parts':
+                return self.get_split_mask(filter_name, folder_struct, mod_name)
 
             if mod_name == 'replace_folder_name_parts':
                 return self.get_replace_mask(filter_name, folder_struct, mod_name)
@@ -211,7 +211,7 @@ class FolderModWidget(FilterLogic):
                 else None,
                 format='%d',
                 on_change=lambda x, e=(filter_name, folder_struct, mod_name, 'level'): helper(*e, int(x.value)),
-            ).classes('w-full')
+            ).classes('w-full no-wrap')
 
         return card
 
@@ -236,8 +236,9 @@ class FolderModWidget(FilterLogic):
                 'use logic operators & for and, | for or, ~ for not, '
                 'group logic operators with (), no need for string or char quotes'
             ).classes(
-                'w-full'
+                'w-full no-wrap'
             )
+
         return card
 
     def new_folder_name_mask(self, filter_name, folder_struct, mod_name):
@@ -257,20 +258,25 @@ class FolderModWidget(FilterLogic):
                 if self.folder_modifications[filter_name][folder_struct][mod_name] is not True
                 else None,
                 on_change=lambda x, e=(filter_name, folder_struct, mod_name, 'name'): helper(*e, x.value),
-            ).classes('w-full')
+            ).classes('w-full no-wrap')
         return card
 
-    def get_strip_mask(self, filter_name, folder_struct, mod_name):
+    def get_split_mask(self, filter_name, folder_struct, mod_name):
         store = {
-            'first': {'strip': None, 'start': None, 'end': None},
-            'second': {'strip': None, 'start': None, 'end': None},
-            'third': {'strip': None, 'start': None, 'end': None},
+            'first': {'split': None, 'start': None, 'end': None},
+            'second': {'split': None, 'start': None, 'end': None},
+            'third': {'split': None, 'start': None, 'end': None},
         }
 
         if isinstance(self.folder_modifications[filter_name][folder_struct][mod_name], bool):
             self.folder_modifications[filter_name][folder_struct][mod_name] = store
 
-        def helper(filter_name, folder_struct, mod_name, step, key, value):
+        def helper_int(filter_name, folder_struct, mod_name, step, key, value):
+            if value < 0:
+                value = 0
+            self.folder_modifications[filter_name][folder_struct][mod_name][step][key] = value
+
+        def helper_str(filter_name, folder_struct, mod_name, step, key, value):
             self.folder_modifications[filter_name][folder_struct][mod_name][step][key] = value
 
         with ui.card() as card:
@@ -278,28 +284,29 @@ class FolderModWidget(FilterLogic):
             ui.label('The selected name parts will be joined with the split char afterwards')
             for step in store:
                 ui.label(f'{step.capitalize()} stage')
-                with ui.row().classes('w-full'):
+                with ui.row().classes('w-full no-wrap'):
                     ui.input(
-                        'Strip char',
-                        value=self.folder_modifications[filter_name][folder_struct][mod_name][step]['strip'],
-                        on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'strip'): helper(
+                        'Split char',
+                        value=self.folder_modifications[filter_name][folder_struct][mod_name][step]['split'],
+                        on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'split'): helper_str(
                             *e, x.value
                         ),
                     )
-
-                    ui.select(
-                        options=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    ui.number(
                         label='Start index',
                         value=self.folder_modifications[filter_name][folder_struct][mod_name][step]['start'],
-                        on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'start'): helper(
-                            *e, x.value
+                        format='%d',
+                        on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'start'): helper_int(
+                            *e, int(x.value)
                         ),
                     )
-                    ui.select(
-                        options=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    ui.number(
                         label='End index',
                         value=self.folder_modifications[filter_name][folder_struct][mod_name][step]['end'],
-                        on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'end'): helper(*e, x.value),
+                        format='%d',
+                        on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'end'): helper_int(
+                            *e, int(x.value)
+                        ),
                     )
         return card
 

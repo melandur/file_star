@@ -1,6 +1,6 @@
 import copy
 
-from core import Handler
+from src.core.handler import Handler
 
 
 class FiltersHandler(Handler):

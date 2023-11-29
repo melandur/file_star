@@ -1,8 +1,10 @@
-import copy
 import os
 
-from core.mods.search.search_logic import Filter, Specification
-from core.mods.search.search_tokens import create_filter_logic, tokenize_filter_string
+from src.core.mods.search.search_logic import Filter, Specification
+from src.core.mods.search.search_tokens import (
+    create_filter_logic,
+    tokenize_filter_string,
+)
 
 
 class FolderNames(Specification):
@@ -79,7 +81,9 @@ def split_folder_name_parts(subject, states):
             folder_names = subject.new_folder_path_rel.split(values['split'])
 
             if values['end'] <= len(folder_names):
-                subject.new_folder_path_rel = f'{values["split"]}'.join(folder_names[values['start'] : values['end']])
+                subject.new_folder_path_rel = f'{values["split"]}'.join(
+                    folder_names[values['start'] : values['end'] + 1]
+                )
 
     return subject
 

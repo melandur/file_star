@@ -24,7 +24,7 @@ def split_file_name_parts(subject, states):
         if values['split'] in subject.new_file_name:
             file_base_name = subject.new_file_name.split(values['split'])
             if values['end'] <= len(file_base_name):
-                new_file_name = f'{values["split"]}'.join(file_base_name[values['start'] : values['end']])
+                new_file_name = f'{values["split"]}'.join(file_base_name[values['start'] : values['end'] + 1])
                 subject = _propagate(subject, new_file_name)
 
     return subject

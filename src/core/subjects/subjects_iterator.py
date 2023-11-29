@@ -1,4 +1,4 @@
-from core.subjects.subject import Subject
+from src.core.subjects.subject import Subject
 
 
 class SubjectsIterator:

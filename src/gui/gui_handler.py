@@ -2,8 +2,8 @@ import os
 
 from nicegui import ui
 
-from core.handler import Handler
-from core.subjects.filters_handler import FiltersHandler
+from src.core.handler import Handler
+from src.core.subjects.filters_handler import FiltersHandler
 
 
 class GuiHandler(Handler):
