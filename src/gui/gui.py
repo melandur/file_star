@@ -49,8 +49,7 @@ class GenericFileFilter:
                     value=self.expand['search'],
                     on_value_change=lambda e: self.expand.update({'search': e.value}),
                 ).classes('w-full'):
-                    self.search_widget.get_widget()
-                    ui.button('Apply', on_click=self.process_search)
+                    self.search_widget.get_widget(self.process_search)
 
             if self.gui_handler.search:
                 with ui.expansion(
@@ -75,7 +74,11 @@ class GenericFileFilter:
             if self.gui_handler.folder_modifications:
                 with ui.expansion('Final', icon='file_download', value=True, on_value_change=None).classes('w-full'):
                     ui.button('Set Destination', icon='output', on_click=self.pick_destination).classes('w-full')
-                    ui.button('Export', icon='play_arrow', on_click=self.execute).classes('w-full')
+
+                    if self.dst_path:
+                        ui.button('Export', icon='play_arrow', on_click=self.execute).classes('w-full')
+                    else:
+                        ui.button('Export', icon='play_arrow', on_click=self.execute).classes('w-full').props('hidden')
 
     def tree_view(self):
         """Tree view"""
@@ -130,6 +133,7 @@ class GenericFileFilter:
             return None
 
         self.filters_handler.set('file_modifications', filters_iter)
+        self.expand.update({'search': False})
         self.update_state(self.filters_handler, 'file_modifications', 'new_file_path_rel')
 
     def process_folder_mods(self):
@@ -140,6 +144,7 @@ class GenericFileFilter:
             return None
 
         self.filters_handler.set('folder_modifications', filters_iter)
+        self.expand.update({'file_modifications': False})
         self.update_state(self.filters_handler, 'folder_modifications', 'new_file_path_rel')
 
     async def pick_source(self) -> None:
@@ -184,6 +189,7 @@ class GenericFileFilter:
             return None
 
         ui.notify(f'Your output will be in {self.dst_path}')
+        self.left_drawer.refresh()
 
     def execute(self):
         """Execute the file modifications"""

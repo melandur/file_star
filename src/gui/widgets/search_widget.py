@@ -17,9 +17,9 @@ class SearchWidget(FilterLogic):
         self.search_name = None
         self.remove_checkbox = {}
 
-    def get_widget(self):
+    def get_widget(self, callback):
         """Return ui"""
-        return self.tab_view()
+        return self.tab_view(callback)
 
     def search_mask(self, name):
         """Search mask"""
@@ -42,11 +42,15 @@ class SearchWidget(FilterLogic):
                 )
 
     @ui.refreshable
-    def tab_view(self):
+    def tab_view(self, callback):
         """Tab view for all searches"""
         with ui.row():
-            ui.button(icon='add').on('click', self.add_dialog)
-            ui.button(icon='remove').on('click', self.remove_dialog)
+            ui.button('Add Filter').on('click', self.add_dialog)
+
+            if self.search:
+                ui.button('Remove Filter').on('click', self.remove_dialog)
+            else:
+                ui.button('Remove Filter').on('click', self.remove_dialog).props('hidden')
 
         with ui.card().tight().classes('w-full'):
             last_tab = None
@@ -58,6 +62,11 @@ class SearchWidget(FilterLogic):
                 for search_name in self.search:
                     with ui.tab_panel(search_name).classes('w-full'):
                         self.search_mask(search_name)
+
+        if self.search:
+            ui.button('Apply', on_click=callback)
+        else:
+            ui.button('Apply', on_click=None).props('hidden')
 
     def remove_dialog(self):
         """Remove filter dialog"""
