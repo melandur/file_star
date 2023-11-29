@@ -163,3 +163,4 @@ cython_debug/
 # Nuitka
 main.build/
 main.dist/
+*.bin
