@@ -1,26 +1,20 @@
 [tool.poetry]
-name = "generic_file_cleaner"
+name = "generic-file-cleaner"
 version = "0.1.0"
 description = ""
 authors = ["melandur <account@qunit.ch>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 nicegui = "^1.4.3"
-loguru = "^0.7.2"
+black = "^23.11.0"
 isort = "^5.12.0"
 pylint = "^3.0.2"
-black = "^23.11.0"
 nuitka = "^1.9.2"
+loguru = "^0.7.2"
+
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.black]
-line-length = 120
-skip-string-normalization = true
-
-[tool.isort]
-profile = "black"
