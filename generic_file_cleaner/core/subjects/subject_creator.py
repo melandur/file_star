@@ -2,8 +2,8 @@ import os
 
 from loguru import logger
 
-from src.core.subjects.subject import Subject
-from src.core.subjects.subjects_iterator import SubjectsIterator
+from generic_file_cleaner.core.subjects.subject import Subject
+from generic_file_cleaner.core.subjects.subjects_iterator import SubjectsIterator
 
 
 class SubjectCreator:

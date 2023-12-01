@@ -1,4 +1,4 @@
-from src.core.subjects.subject import Subject
+from generic_file_cleaner.core.subjects.subject import Subject
 
 
 class SubjectsIterator:

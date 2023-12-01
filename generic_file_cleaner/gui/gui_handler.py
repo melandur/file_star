@@ -2,8 +2,8 @@ import os
 
 from nicegui import ui
 
-from src.core.handler import Handler
-from src.core.subjects.filters_handler import FiltersHandler
+from generic_file_cleaner.core.handler import Handler
+from generic_file_cleaner.core.subjects.filters_handler import FiltersHandler
 
 
 class GuiHandler(Handler):
@@ -11,7 +11,10 @@ class GuiHandler(Handler):
         super().__init__()
 
     def subject_handler_to_gui_handler(
-        self, subjects_handler: FiltersHandler = None, state: str = None, path_type: str = None
+        self,
+        subjects_handler: FiltersHandler = None,
+        state: str = None,
+        path_type: str = None,
     ) -> None:
         """Convert subject_handler to gui_handler"""
 
@@ -25,7 +28,7 @@ class GuiHelper:
         self.filters_handler = filters_handler
 
         self._tree_format = {}
-        self._tree_gui = ui.tree([{'id': ''}], label_key='id')
+        self._tree_gui = ui.tree(nodes=[{'id': ''}], label_key='id')
 
         self._get_tree_format(path_type, limit=10000)
 
@@ -62,6 +65,7 @@ class GuiHelper:
             else:
                 file_paths.append(subject.file_path_rel)
 
+        file_paths.sort()
         file_paths = file_paths[:limit]
 
         for file_path_rel in file_paths:

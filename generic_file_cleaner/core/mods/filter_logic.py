@@ -2,14 +2,14 @@ import copy
 import os
 import shutil
 
-from src.core.handler import Handler
-from src.core.mods.file.file_mod_logic import (  # needed for file_modifications
+from generic_file_cleaner.core.handler import Handler
+from generic_file_cleaner.core.mods.file.file_mod_logic import (  # needed for file_modifications
     add_file_prefix_suffix,
     new_file_name,
     replace_file_name_parts,
     split_file_name_parts,
 )
-from src.core.mods.folder.folder_mod_logic import (  # needed for new_folder_modifications
+from generic_file_cleaner.core.mods.folder.folder_mod_logic import (  # needed for new_folder_modifications
     add_folder_prefix_suffix,
     find_folder_by_level,
     find_folder_by_name,
@@ -17,17 +17,18 @@ from src.core.mods.folder.folder_mod_logic import (  # needed for new_folder_mod
     replace_folder_name_parts,
     split_folder_name_parts,
 )
-from src.core.mods.search import (
+from generic_file_cleaner.core.mods.search import (
     Extension,
     FileName,
     FolderNames,
     SearchFilter,
+    analyze_search,
     check_for_inactive_search,
     check_search_collisions,
     create_search_statements,
 )
-from src.core.subjects.filters_iterator import FiltersIterator
-from src.core.subjects.subjects_iterator import SubjectsIterator
+from generic_file_cleaner.core.subjects.filters_iterator import FiltersIterator
+from generic_file_cleaner.core.subjects.subjects_iterator import SubjectsIterator
 
 
 class FilterLogic(Handler):
@@ -67,6 +68,7 @@ class FilterLogic(Handler):
 
             inactive_search = check_for_inactive_search(filters_iter)
             collision = check_search_collisions(filters_iter)
+            analsis = analyze_search(filters_iter)
             return filters_iter, collision, inactive_search
 
         return None, None, None
