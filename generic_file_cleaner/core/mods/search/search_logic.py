@@ -79,8 +79,9 @@ class FolderNames(Specification):
         self.folder_name = args
 
     def is_satisfied(self, subject) -> bool:
-        if any(x in y for x in self.folder_name for y in subject.folder_path_rel):
-            return True
+        for folder_name in self.folder_name:
+            if folder_name in subject.folder_path_rel:
+                return True
 
 
 class Extension(Specification):

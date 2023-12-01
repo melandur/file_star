@@ -191,7 +191,7 @@ class GenericFileFilter:
             return None
 
         ui.notify(f'Your output will be in {self.dst_path}')
-        self.left_drawer.refresh()
+        self.left_drawer_update.refresh()
 
     def execute(self):
         """Execute the file modifications"""
