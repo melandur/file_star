@@ -181,7 +181,7 @@ class GenericFileFilter:
     def update_state(self, subject_handler, state, path_type):
         self.gui_handler.subject_handler_to_gui_handler(subject_handler, state, path_type)
         self.show_gui_tree.refresh()
-        self.left_drawer.refresh()
+        self.left_drawer_update.refresh()
 
     async def pick_destination(self) -> None:
         """Pick destination folder"""

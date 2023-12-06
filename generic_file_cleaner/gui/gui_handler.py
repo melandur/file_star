@@ -1,7 +1,5 @@
 import os
 
-from nicegui import ui
-
 from generic_file_cleaner.core.handler import Handler
 from generic_file_cleaner.core.subjects.filters_handler import FiltersHandler
 
@@ -28,7 +26,7 @@ class GuiHelper:
         self.filters_handler = filters_handler
 
         self._tree_format = {}
-        self._tree_gui = ui.tree(nodes=[{'id': ''}], label_key='id')
+        self._tree_gui = None
 
         self._get_tree_format(path_type, limit=10000)
 
