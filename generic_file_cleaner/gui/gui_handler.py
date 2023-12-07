@@ -28,7 +28,7 @@ class GuiHelper:
         self._tree_format = {}
         self._tree_gui = None
 
-        self._get_tree_format(path_type, limit=10000)
+        self._get_tree_format(path_type, limit=5000)
 
     @property
     def tree_format(self):
@@ -46,7 +46,7 @@ class GuiHelper:
     def tree_gui(self, value):
         self._tree_gui = value
 
-    def _get_tree_format(self, path_type, limit=10000) -> dict or None:
+    def _get_tree_format(self, path_type, limit) -> dict or None:
         """Convert a list of file paths into a tree structure"""
 
         if getattr(self.filters_handler, self.state) is None:

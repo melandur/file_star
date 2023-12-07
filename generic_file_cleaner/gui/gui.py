@@ -19,6 +19,7 @@ class GenericFileFilter:
         self.dst_path = None
 
         self.expand = {'search': True, 'file_modifications': True, 'folder_modifications': True}
+        self.show_tree = {'original': True, 'search': True, 'file_modifications': True, 'folder_modifications': True}
 
         self.gui_handler = GuiHandler()
         self.filter_logic = FilterLogic()
@@ -35,7 +36,7 @@ class GenericFileFilter:
 
     def header(self):
         with ui.header():
-            ui.label('Cleaner').style('font-size: 30px; font-weight: bold; color: #3874c8;')
+            ui.label('File*').style('font-size: 30px; font-weight: bold;')
 
     def left_drawer(self):
         with ui.left_drawer().classes('bg-blue-100 w-full h-full').props('width=400'):
@@ -50,7 +51,7 @@ class GenericFileFilter:
                 icon='search',
                 value=self.expand['search'],
                 on_value_change=lambda e: self.expand.update({'search': e.value}),
-            ).classes('w-full'):
+            ).classes('w-full').props('header-class="bg-primary"'):
                 self.search_widget.get_widget(self.process_search)
 
         if self.gui_handler.search:
@@ -59,7 +60,7 @@ class GenericFileFilter:
                 icon='description',
                 value=self.expand['file_modifications'],
                 on_value_change=lambda e: self.expand.update({'file_modifications': e.value}),
-            ).classes('w-full'):
+            ).classes('w-full').props('header-class="bg-primary"'):
                 self.file_mod_widget.get_widget()
                 ui.button(text='Apply', on_click=self.process_file_mods)
 
@@ -69,12 +70,17 @@ class GenericFileFilter:
                 value=self.expand['folder_modifications'],
                 icon='folder',
                 on_value_change=lambda e: self.expand.update({'folder_modifications': e.value}),
-            ).classes('w-full'):
+            ).classes('w-full').props('header-class="bg-primary"'):
                 self.folder_mod_widget.get_widget()
                 ui.button(text='Apply', on_click=self.process_folder_mods)
 
         if self.gui_handler.folder_modifications:
-            with ui.expansion(text='Final', icon='file_download', value=True, on_value_change=None).classes('w-full'):
+            with ui.expansion(
+                    text='Final',
+                    icon='file_download',
+                    value=True,
+                    on_value_change=None
+            ).classes('w-full').props('header-class="bg-primary"'):
                 ui.button(text='Set Destination', icon='output', on_click=self.pick_destination).classes('w-full')
 
                 if self.dst_path:
@@ -166,14 +172,14 @@ class GenericFileFilter:
             ui.notify(message=f'No files found in {src_path}', type='negative')
             return None
 
-        if len(subject_iter) >= 10000:
+        if len(subject_iter) >= 5000:
             ui.notify(
-                message="To many files to show, only the first 10'000 are presented here."
+                message="To many files to show, only the first 5'000 are presented here."
                 f"However, all of the files in {self.src_path} will be processed.",
-                type='ongoing',
                 multi_line=True,
-                close_button='OK',
+                type='info',
             )
+            self.show_tree['original'] = False
 
         self.src_path = src_path
         self.update_state(self.filters_handler, state='original', path_type='file_path_rel')
@@ -212,18 +218,26 @@ class GenericFileFilter:
                 getattr(self.gui_handler, state).tree_gui._props['filter'] = e.value
             getattr(self.gui_handler, state).tree_gui.expand()
 
+        def switch(e, _state):
+            self.show_tree[_state] = e.value
+            self.show_gui_tree.refresh()
+
         tree_name = state.replace('_', ' ').capitalize()
-        ui.label(tree_name).style('font-size: 20px; font-weight: bold; color: #3874c8')
         with ui.row().classes('w-full no-wrap'):
-            ui.input(label='Search', on_change=lambda e, _state=state: tree_filter(e, _state))
-            ui.button(
-                icon='expand_more',
-                on_click=lambda e: getattr(self.gui_handler, state).tree_gui.props('filter=').expand(),
-            )
-            ui.button(
-                icon='expand_less',
-                on_click=lambda e: getattr(self.gui_handler, state).tree_gui.props('filter=').collapse(),
-            )
+            ui.label(tree_name).style('font-size: 20px; font-weight: bold; color: #3874c8')
+            ui.switch(text='', value=self.show_tree[state], on_change=lambda e, _state=state: switch(e, _state))
+
+        if self.show_tree[state]:
+            with ui.row().classes('w-full no-wrap'):
+                ui.input(label='Search', on_change=lambda e, _state=state: tree_filter(e, _state))
+                ui.button(
+                    icon='expand_more',
+                    on_click=lambda e: getattr(self.gui_handler, state).tree_gui.props('filter=').expand(),
+                )
+                ui.button(
+                    icon='expand_less',
+                    on_click=lambda e: getattr(self.gui_handler, state).tree_gui.props('filter=').collapse(),
+                )
 
     @ui.refreshable
     def show_gui_tree(self, state) -> None:
@@ -231,7 +245,8 @@ class GenericFileFilter:
         if getattr(self.gui_handler, state):
             with ui.column().classes('w-full h-full no-wrap'):
                 self.tree_menu(state)
-                with ui.scroll_area().style('height: 1000px;'):
-                    tree = ui.tree(getattr(self.gui_handler, state).tree_format, label_key='id').expand()
-                    del tree._props['selected']
-                    getattr(self.gui_handler, state).tree_gui = tree
+                if self.show_tree[state]:
+                    with ui.scroll_area().style('height: 1000px;'):
+                        tree = ui.tree(getattr(self.gui_handler, state).tree_format, label_key='id').expand()
+                        del tree._props['selected']
+                        getattr(self.gui_handler, state).tree_gui = tree
