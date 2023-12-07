@@ -76,11 +76,13 @@ class GenericFileFilter:
 
         if self.gui_handler.folder_modifications:
             with ui.expansion(
-                    text='Final',
-                    icon='file_download',
-                    value=True,
-                    on_value_change=None
-            ).classes('w-full').props('header-class="bg-primary"'):
+                text='Final',
+                icon='file_download',
+                value=True,
+                on_value_change=None,
+            ).classes(
+                'w-full'
+            ).props('header-class="bg-primary"'):
                 ui.button(text='Set Destination', icon='output', on_click=self.pick_destination).classes('w-full')
 
                 if self.dst_path:
@@ -243,7 +245,12 @@ class GenericFileFilter:
     def show_gui_tree(self, state) -> None:
         """Show gui tree"""
         if getattr(self.gui_handler, state):
-            with ui.column().classes('w-full h-full no-wrap'):
+            if self.show_tree[state]:
+                classes = 'w-full h-full no-wrap'
+            else:
+                classes = 'h-full no-wrap'
+
+            with ui.column().classes(classes):
                 self.tree_menu(state)
                 if self.show_tree[state]:
                     with ui.scroll_area().style('height: 1000px;'):
