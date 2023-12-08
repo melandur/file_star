@@ -51,7 +51,7 @@ class FileStar:
                 icon='search',
                 value=self.expand['search'],
                 on_value_change=lambda e: self.expand.update({'search': e.value}),
-            ).classes('w-full').props('header-class="bg-primary"'):
+            ).classes('w-full').props('header-class="bg-primary text-white"'):
                 self.search_widget.get_widget(self.process_search)
 
         if self.gui_handler.search:
@@ -60,7 +60,7 @@ class FileStar:
                 icon='description',
                 value=self.expand['file_modifications'],
                 on_value_change=lambda e: self.expand.update({'file_modifications': e.value}),
-            ).classes('w-full').props('header-class="bg-primary"'):
+            ).classes('w-full').props('header-class="bg-primary text-white"'):
                 self.file_mod_widget.get_widget()
                 ui.button(text='Apply', on_click=self.process_file_mods)
 
@@ -70,7 +70,7 @@ class FileStar:
                 value=self.expand['folder_modifications'],
                 icon='folder',
                 on_value_change=lambda e: self.expand.update({'folder_modifications': e.value}),
-            ).classes('w-full').props('header-class="bg-primary"'):
+            ).classes('w-full').props('header-class="bg-primary text-white"'):
                 self.folder_mod_widget.get_widget()
                 ui.button(text='Apply', on_click=self.process_folder_mods)
 
@@ -82,7 +82,7 @@ class FileStar:
                 on_value_change=None,
             ).classes(
                 'w-full'
-            ).props('header-class="bg-primary"'):
+            ).props('header-class="bg-primary text-white"'):
                 ui.button(text='Set Destination', icon='output', on_click=self.pick_destination).classes('w-full')
 
                 if self.dst_path:
