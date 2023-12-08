@@ -2,14 +2,14 @@ import copy
 import os
 import shutil
 
-from generic_file_cleaner.core.handler import Handler
-from generic_file_cleaner.core.mods.file.file_mod_logic import (  # needed for file_modifications
+from file_star.core.handler import Handler
+from file_star.core.mods.file.file_mod_logic import (  # needed for file_modifications
     add_file_prefix_suffix,
     new_file_name,
     replace_file_name_parts,
     split_file_name_parts,
 )
-from generic_file_cleaner.core.mods.folder.folder_mod_logic import (  # needed for new_folder_modifications
+from file_star.core.mods.folder.folder_mod_logic import (  # needed for new_folder_modifications
     add_folder_prefix_suffix,
     find_folder_by_level,
     find_folder_by_name,
@@ -17,7 +17,7 @@ from generic_file_cleaner.core.mods.folder.folder_mod_logic import (  # needed f
     replace_folder_name_parts,
     split_folder_name_parts,
 )
-from generic_file_cleaner.core.mods.search import (
+from file_star.core.mods.search import (
     Extension,
     FileName,
     FolderNames,
@@ -27,8 +27,8 @@ from generic_file_cleaner.core.mods.search import (
     check_search_collisions,
     create_search_statements,
 )
-from generic_file_cleaner.core.subjects.filters_iterator import FiltersIterator
-from generic_file_cleaner.core.subjects.subjects_iterator import SubjectsIterator
+from file_star.core.subjects.filters_iterator import FiltersIterator
+from file_star.core.subjects.subjects_iterator import SubjectsIterator
 
 
 class FilterLogic(Handler):

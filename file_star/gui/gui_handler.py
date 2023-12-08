@@ -1,7 +1,7 @@
 import os
 
-from generic_file_cleaner.core.handler import Handler
-from generic_file_cleaner.core.subjects.filters_handler import FiltersHandler
+from file_star.core.handler import Handler
+from file_star.core.subjects.filters_handler import FiltersHandler
 
 
 class GuiHandler(Handler):

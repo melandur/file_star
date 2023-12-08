@@ -3,7 +3,7 @@ import copy
 from nicegui import ui
 from nicegui.events import KeyEventArguments
 
-from generic_file_cleaner.core.mods.filter_logic import FilterLogic
+from file_star.core.mods.filter_logic import FilterLogic
 
 
 class SearchWidget(FilterLogic):

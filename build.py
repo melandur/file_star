@@ -17,7 +17,7 @@ class Build:
             os.path.expanduser('~'),
             'miniconda3',
             'envs',
-            'generic_file_filter',
+            'file_star',
             'lib',
             'python3.10',
             'site-packages',

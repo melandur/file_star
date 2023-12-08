@@ -1,7 +1,7 @@
 import os
 
-from generic_file_cleaner.core.mods.search.search_logic import Filter, Specification
-from generic_file_cleaner.core.mods.search.search_tokens import (
+from file_star.core.mods.search.search_logic import Filter, Specification
+from file_star.core.mods.search.search_tokens import (
     create_filter_logic,
     tokenize_filter_string,
 )

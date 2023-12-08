@@ -1,11 +1,11 @@
 from nicegui import ui
 
-from generic_file_cleaner.core.mods.filter_logic import FilterLogic
-from generic_file_cleaner.core.subjects.filters_handler import FiltersHandler
-from generic_file_cleaner.core.subjects.filters_iterator import FiltersIterator
-from generic_file_cleaner.core.subjects.subject_creator import SubjectCreator
-from generic_file_cleaner.gui.gui_handler import GuiHandler
-from generic_file_cleaner.gui.widgets import (
+from file_star.core.mods.filter_logic import FilterLogic
+from file_star.core.subjects.filters_handler import FiltersHandler
+from file_star.core.subjects.filters_iterator import FiltersIterator
+from file_star.core.subjects.subject_creator import SubjectCreator
+from file_star.gui.gui_handler import GuiHandler
+from file_star.gui.widgets import (
     FileModWidget,
     FolderModWidget,
     LocalFolderPicker,
@@ -13,7 +13,7 @@ from generic_file_cleaner.gui.widgets import (
 )
 
 
-class GenericFileFilter:
+class FileStar:
     def __init__(self):
         self.src_path = None
         self.dst_path = None

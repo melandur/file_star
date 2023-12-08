@@ -1,6 +1,6 @@
 import copy
 
-from generic_file_cleaner.core.handler import Handler
+from file_star.core.handler import Handler
 
 
 class FiltersHandler(Handler):

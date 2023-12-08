@@ -1,6 +1,6 @@
 # File*
 
-[![GitHub License](https://img.shields.io/github/license/melandur/generic_file_cleaner)](LICENSE)
+[![GitHub License](https://img.shields.io/github/license/melandur/file_star)](LICENSE)
 
 
 ![Alt Text](doc/gui.png)
@@ -17,8 +17,8 @@ File names and folder names can be changed per filter and are viualized in a pre
 Explain how to install your project, including any prerequisites or dependencies.
 
 ```bash
-$ git clone https://github.com/melandur/generic_file_cleaner.git
-$ cd generic_file_cleaner
+$ git clone https://github.com/melandur/file_star.git
+$ cd file_star
 
 $ pip install -r requirements.txt
 $ or
