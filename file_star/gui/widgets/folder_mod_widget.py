@@ -144,7 +144,7 @@ class FolderModWidget(FilterLogic):
         template_mods = self.folder_modifications[_filter_name]
         for filter_name in self.filter_names:
             if filter_name != _filter_name:
-                self.folder_modifications[filter_name] = template_mods
+                self.folder_modifications[filter_name] = copy.deepcopy(template_mods)
         self.tab_view.refresh()
 
     def mod_mask(self, filter_name):
