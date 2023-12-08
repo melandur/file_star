@@ -9,8 +9,8 @@ class Build:
     def __init__(self):
         """This depends on the user, may need some path adaption"""
         cwd = os.getcwd()
-        self.entry_path = os.path.join(cwd, 'src', 'main.py')
-        self.build_path = os.path.join(cwd, 'build')
+        self.entry_path = os.path.join(cwd, 'main.py')
+        self.build_path = os.path.join(os.path.dirname(cwd), 'build')
         os.makedirs(self.build_path, exist_ok=True)
 
         self.user_env_path = os.path.join(
