@@ -84,6 +84,6 @@ class FiltersHandler(Handler):
                 subjects_iter = getattr(state_attr, filter_name)
                 relative_paths = subjects_iter.get('file_path_rel')
                 file_counts += len(relative_paths)
-                top_level_folders.extend(list(set([path.split(os.sep)[0] for path in relative_paths])))
-            top_level_folders_counts = len(top_level_folders)
+                top_level_folders.extend([path.split(os.sep)[0] for path in relative_paths])
+            top_level_folders_counts = len(list(set(top_level_folders)))
             return file_counts, top_level_folders_counts
