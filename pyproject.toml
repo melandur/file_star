@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "generic-file-cleaner"
+name = "file_star"
 version = "0.1.0"
-description = ""
+description = "File* - A web based file manager"
 authors = ["melandur <account@qunit.ch>"]
 readme = "README.md"
 
