@@ -138,6 +138,15 @@ class FolderModWidget(FilterLogic):
 
         self.tab_view.refresh()
 
+    def copy_mods(self, _filter_name):
+        """Copy mods from one filter to all other filters"""
+
+        template_mods = self.folder_modifications[_filter_name]
+        for filter_name in self.filter_names:
+            if filter_name != _filter_name:
+                self.folder_modifications[filter_name] = template_mods
+        self.tab_view.refresh()
+
     def mod_mask(self, filter_name):
         """Filter mask"""
 
@@ -150,9 +159,16 @@ class FolderModWidget(FilterLogic):
             'add_folder_prefix_suffix': 'Add prefix and/or suffix to folder name',
         }
 
-        ui.label('Folder Modifications'.format(filter_name)).style(
-            'font-size: 20px; font-weight: bold; color: #3874c8;'
-        )
+        with ui.row().classes('w-full'):
+            ui.label('Folder Modifications'.format(filter_name)).style(
+                'font-size: 20px; font-weight: bold; color: #3874c8;'
+            )
+            ui.button(
+                'Template',
+                on_click=lambda e, x=filter_name: self.copy_mods(x),
+            ).classes(
+                'ml-auto'
+            ).tooltip('Copy mods from this filter to all other filters')
 
         for folder_struct in self.folder_modifications[filter_name]:
             show_folder_name = folder_struct.replace('_', ' ').capitalize()
@@ -312,9 +328,9 @@ class FolderModWidget(FilterLogic):
 
     def get_replace_mask(self, filter_name, folder_struct, mod_name):
         store = {
-            'first': {'old': None, 'new': None},
-            'second': {'old': None, 'new': None},
-            'third': {'old': None, 'new': None},
+            'first': {'old': None, 'new': ''},
+            'second': {'old': None, 'new': ''},
+            'third': {'old': None, 'new': ''},
         }
         if isinstance(self.folder_modifications[filter_name][folder_struct][mod_name], bool):
             self.folder_modifications[filter_name][folder_struct][mod_name] = store

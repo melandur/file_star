@@ -165,6 +165,9 @@ class FileStar:
         if src_path is None:
             return None
 
+        if self.src_path:
+            self.reset_gui()
+
         subject_creator = SubjectCreator(src_path)
         subject_iter = subject_creator()
         filters_iter = FiltersIterator(original=subject_iter)
@@ -190,6 +193,25 @@ class FileStar:
         self.gui_handler.subject_handler_to_gui_handler(subject_handler, state, path_type)
         self.show_gui_tree.refresh()
         self.left_drawer_update.refresh()
+
+    def reset_gui(self):
+        """Reset the gui"""
+        self.src_path = None
+        self.dst_path = None
+
+        self.expand = {'search': True, 'file_modifications': True, 'folder_modifications': True}
+        self.show_tree = {'original': True, 'search': True, 'file_modifications': True, 'folder_modifications': True}
+
+        self.gui_handler = GuiHandler()
+        self.filter_logic = FilterLogic()
+        self.filters_handler = FiltersHandler()
+
+        self.search_widget = SearchWidget()
+        self.file_mod_widget = FileModWidget()
+        self.folder_mod_widget = FolderModWidget()
+
+        self.left_drawer_update.refresh()
+        self.show_gui_tree.refresh()
 
     async def pick_destination(self) -> None:
         """Pick destination folder"""
