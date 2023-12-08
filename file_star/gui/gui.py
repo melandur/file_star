@@ -180,7 +180,7 @@ class FileStar:
         if len(subject_iter) >= 5000:
             ui.notify(
                 message="To many files to show, only the first 5'000 are presented here."
-                f"However, all of the files in {self.src_path} will be processed.",
+                f"However, all of the files in {src_path} will be processed.",
                 multi_line=True,
                 type='info',
             )
