@@ -240,6 +240,13 @@ class FileStar:
                     icon='expand_less',
                     on_click=lambda e: getattr(self.gui_handler, state).tree_gui.props('filter=').collapse(),
                 )
+            file_counts, top_level_folders_count = self.filters_handler.counts(state)
+
+            with ui.row().classes('w-full no-wrap'):
+                ui.label(f'Top Level Folders Count: {top_level_folders_count}').style(
+                    'font-size: 15px; font-weight: bold;'
+                )
+                ui.label(f'Files Count: {file_counts}').style('font-size: 15px; font-weight: bold;')
 
     @ui.refreshable
     def show_gui_tree(self, state) -> None:
