@@ -100,7 +100,7 @@ def replace_folder_name_parts(subject, states):
 
         try:
             if re.search(values['old'], subject.new_folder_path_rel):
-                subject.new_folder_path_rel = re.sub(values['old'], values['new'], subject.folder_path_rel)
+                subject.new_folder_path_rel = re.sub(values['old'], values['new'], subject.new_folder_path_rel)
 
         except re.error as e:
             logger.warning(f"Regex error occurred for folder name replacement: {e}")
