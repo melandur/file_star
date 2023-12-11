@@ -1,4 +1,7 @@
 import os
+import re
+
+from loguru import logger
 
 
 def new_file_name(subject, states):
@@ -37,9 +40,12 @@ def replace_file_name_parts(subject, states):
         if values['old'] is None or values['new'] is None:
             continue
 
-        if values['old'] in subject.new_file_name:
-            new_file_name = subject.new_file_name.replace(values['old'], values['new'])
-            subject = _propagate(subject, new_file_name)
+        try:
+            if re.search(values['old'], subject.new_file_name):
+                new_file_name = re.sub(values['old'], values['new'], subject.new_file_name)
+                subject = _propagate(subject, new_file_name)
+        except re.error as e:
+            logger.warning(f"Regex error occurred for file name replacement: {e}")
 
     return subject
 

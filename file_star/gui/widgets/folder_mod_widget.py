@@ -339,7 +339,7 @@ class FolderModWidget(FilterLogic):
             self.folder_modifications[filter_name][folder_struct][mod_name][step][key] = value
 
         with ui.card() as card:
-            ui.label('The current name part will be replaced with the new name part if present.')
+            ui.label('The current name part will be replaced with the new name part if present. Regex is supported')
             ui.label('Order of replacement stages: First, Second, Third')
             for step in store:
                 ui.label(f'{step.capitalize()} stage')

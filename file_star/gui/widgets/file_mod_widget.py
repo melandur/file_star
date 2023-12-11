@@ -95,7 +95,7 @@ class FileModWidget(FilterLogic):
         mod_description = {
             'new_file_name': 'Replace current file name with new file name',
             'split_file_name_parts': 'Strip certain parts of file name',
-            'replace_file_name_parts': 'Replace certain parts of file name with new parts',
+            'replace_file_name_parts': 'Replace certain parts of file name with new parts, supports regex',
             'add_file_prefix_suffix': 'Add prefix and/or suffix to file name',
         }
 

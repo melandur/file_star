@@ -1,4 +1,7 @@
 import os
+import re
+
+from loguru import logger
 
 from file_star.core.mods.search.search_logic import Filter, Specification
 from file_star.core.mods.search.search_tokens import (
@@ -95,8 +98,12 @@ def replace_folder_name_parts(subject, states):
         if values['old'] is None or values['new'] is None:
             continue
 
-        if values['old'] in subject.new_folder_path_rel:
-            subject.new_folder_path_rel = subject.new_folder_path_rel.replace(values['old'], values['new'])
+        try:
+            if re.search(values['old'], subject.new_folder_path_rel):
+                subject.new_folder_path_rel = re.sub(values['old'], values['new'], subject.folder_path_rel)
+
+        except re.error as e:
+            logger.warning(f"Regex error occurred for folder name replacement: {e}")
 
     return subject
 

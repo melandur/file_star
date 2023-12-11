@@ -1,4 +1,7 @@
+import re
 from abc import ABC, abstractmethod
+
+from loguru import logger
 
 
 class Specification(ABC):
@@ -61,39 +64,57 @@ class Filter(ABC):
 
 
 class FileName(Specification):
-    """Search for file name specifications"""
+    """Search for file name specifications with regex"""
 
     def __init__(self, *args) -> None:
         self.file_names = args
 
     def is_satisfied(self, subject) -> bool:
         for file_name in self.file_names:
-            if file_name in subject.file_name:
-                return True
+            try:
+                if (
+                    bool(re.search(file_name, subject.file_base_name))
+                    and re.search(file_name, subject.file_base_name).group() != ''
+                ):
+                    return True
+            except re.error as e:
+                logger.warning(f"Regex error occurred for file names: {e}")
 
 
 class FolderNames(Specification):
-    """Search for folder name specifications"""
+    """Search for folder name specifications with regex"""
 
     def __init__(self, *args) -> None:
         self.folder_name = args
 
     def is_satisfied(self, subject) -> bool:
         for folder_name in self.folder_name:
-            if folder_name in subject.folder_path_rel:
-                return True
+            try:
+                if (
+                    bool(re.search(folder_name, subject.folder_path_rel))
+                    and re.search(folder_name, subject.folder_path_rel).group() != ''
+                ):
+                    return True
+            except re.error as e:
+                logger.warning(f"Regex error occurred for folder names: {e}")
 
 
 class Extension(Specification):
-    """Search for extension specifications"""
+    """Search for extension specifications with regex"""
 
     def __init__(self, *args) -> None:
         self.extension = args
 
     def is_satisfied(self, subject) -> bool:
         for extension in self.extension:
-            if extension in subject.extension:
-                return True
+            try:
+                if (
+                    bool(re.search(extension, subject.extension))
+                    and re.search(extension, subject.extension).group() != ''
+                ):
+                    return True
+            except re.error as e:
+                logger.warning(f"Regex error occurred for extension: {e}")
 
 
 class SearchFilter(Filter):

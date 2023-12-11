@@ -36,7 +36,7 @@ class SearchWidget(FilterLogic):
                     on_change=lambda x, e=key: self.search[name].update({e: str(x.value)}),
                 ).tooltip(
                     'use logic operators & for and, | for or, ~ for not, '
-                    'group logic operators with (), no need for string or char quotes'
+                    'group logic operators with (), no need for string or char quotes, regex is supported'
                 ).classes(
                     'w-full'
                 )
@@ -44,13 +44,15 @@ class SearchWidget(FilterLogic):
     @ui.refreshable
     def tab_view(self, callback):
         """Tab view for all searches"""
-        with ui.row():
+        with ui.row().classes('w-full no-wrap'):
             ui.button('Add Filter').on('click', self.add_dialog)
 
             if self.search:
                 ui.button('Remove Filter').on('click', self.remove_dialog)
             else:
                 ui.button('Remove Filter').on('click', self.remove_dialog).props('hidden')
+
+            ui.link('Regex', 'https://regex101.com/', new_tab=True).classes('ml-auto')
 
         with ui.card().tight().classes('w-full'):
             last_tab = None
