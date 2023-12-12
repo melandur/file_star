@@ -5,6 +5,8 @@ from file_star.core.subjects.filters_handler import FiltersHandler
 
 
 class GuiHandler(Handler):
+    """Gui handler"""
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -21,6 +23,8 @@ class GuiHandler(Handler):
 
 
 class GuiHelper:
+    """Gui helper"""
+
     def __init__(self, filters_handler: FiltersHandler = None, state: str = None, path_type: str = None) -> None:
         self.state = state
         self.filters_handler = filters_handler
@@ -90,6 +94,8 @@ class GuiHelper:
         """Count the number of children and grandchildren in a tree structure"""
 
         def count_descendants(item):
+            """Count the number of children and grandchildren in a tree structure"""
+
             if 'children' in item and len(item['children']) > 0:
                 for child in item['children']:
                     grandchildren_count = len(child.get('children', []))

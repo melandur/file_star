@@ -34,9 +34,12 @@ class FolderModWidget(FilterLogic):
 
     def get_widget(self):
         """Return ui"""
+
         return self.tab_view()
 
     def init_mods(self):
+        """Init mods"""
+
         sub_template = {
             'find_folder_by_level': False,
             'find_folder_by_name': False,
@@ -78,6 +81,8 @@ class FolderModWidget(FilterLogic):
                             self.mod_mask(filter_name)
 
     def update_mod_store(self, e):
+        """Update mod store"""
+
         filter_name, folder_struct, mod_name = e
         if self.folder_modifications[filter_name][folder_struct][mod_name]:
             self.folder_modifications[filter_name][folder_struct][mod_name] = False
@@ -86,6 +91,8 @@ class FolderModWidget(FilterLogic):
         self.update_available_mods(filter_name, folder_struct, mod_name)
 
     def update_available_mods(self, filter_name, folder_struct, mod_name):
+        """Update available mods"""
+
         if mod_name == 'find_folder_by_level':
             if self.folder_modifications[filter_name][folder_struct][mod_name]:
                 for mod_name in ['find_folder_by_name', 'new_folder_name']:
@@ -189,6 +196,8 @@ class FolderModWidget(FilterLogic):
                         )
 
     def get_adequate_mask(self, filter_name, folder_struct, mod_name):
+        """Get adequate mask"""
+
         if self.folder_modifications[filter_name][folder_struct][mod_name]:
             if mod_name == 'find_folder_by_level':
                 return self.get_find_folder_by_level_mask(filter_name, folder_struct, mod_name)
@@ -209,6 +218,8 @@ class FolderModWidget(FilterLogic):
                 return self.get_prefix_suffix_mask(filter_name, folder_struct, mod_name)
 
     def get_find_folder_by_level_mask(self, filter_name, folder_struct, mod_name):
+        """Get find folder by level mask"""
+
         store = {'level': None}
 
         if isinstance(self.folder_modifications[filter_name][folder_struct][mod_name], bool):
@@ -232,6 +243,8 @@ class FolderModWidget(FilterLogic):
         return card
 
     def find_folder_by_name_mask(self, filter_name, folder_struct, mod_name):
+        """Find folder by name mask"""
+
         store = {'name': None}
 
         if isinstance(self.folder_modifications[filter_name][folder_struct][mod_name], bool):
@@ -258,6 +271,8 @@ class FolderModWidget(FilterLogic):
         return card
 
     def new_folder_name_mask(self, filter_name, folder_struct, mod_name):
+        """New folder name mask"""
+
         store = {'name': None}
 
         if isinstance(self.folder_modifications[filter_name][folder_struct][mod_name], bool):
@@ -278,6 +293,8 @@ class FolderModWidget(FilterLogic):
         return card
 
     def get_split_mask(self, filter_name, folder_struct, mod_name):
+        """Get split mask"""
+
         store = {
             'first': {'split': None, 'start': None, 'end': None},
             'second': {'split': None, 'start': None, 'end': None},
@@ -327,6 +344,8 @@ class FolderModWidget(FilterLogic):
         return card
 
     def get_replace_mask(self, filter_name, folder_struct, mod_name):
+        """Get replace mask"""
+
         store = {
             'first': {'old': None, 'new': ''},
             'second': {'old': None, 'new': ''},
@@ -357,6 +376,8 @@ class FolderModWidget(FilterLogic):
         return card
 
     def get_prefix_suffix_mask(self, filter_name, folder_struct, mod_name):
+        """Get prefix suffix mask"""
+
         store = {'prefix': None, 'suffix': None}
 
         if isinstance(self.folder_modifications[filter_name][folder_struct][mod_name], bool):

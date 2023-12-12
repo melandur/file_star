@@ -52,8 +52,6 @@ class SearchWidget(FilterLogic):
             else:
                 ui.button('Remove Filter').on('click', self.remove_dialog).props('hidden')
 
-            ui.link('Regex', 'https://regex101.com/', new_tab=True).classes('ml-auto')
-
         with ui.card().tight().classes('w-full'):
             last_tab = None
             with ui.tabs().classes('w-full') as tabs:

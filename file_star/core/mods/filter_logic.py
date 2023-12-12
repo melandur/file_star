@@ -32,6 +32,8 @@ from file_star.core.subjects.subjects_iterator import SubjectsIterator
 
 
 class FilterLogic(Handler):
+    """Filter logic"""
+
     _shared_state = {}  # Class attribute to store shared state
 
     def __init__(self, **kwargs) -> None:

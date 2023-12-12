@@ -38,16 +38,20 @@ class LocalFolderPicker(ui.dialog):
 
     def add_drives_toggle(self):
         """Windows file path encoding"""
+
         if platform.system() == 'Windows':
             drives = win32api.GetLogicalDriveStrings().split('\000')[:-1]
             self.drives_toggle = ui.toggle(drives, value=drives[0], on_change=self.update_drive)
 
     def update_drive(self):
+        """Update drive"""
+
         self.path = Path(self.drives_toggle.value).expanduser()
         self.update_grid()
 
     def update_grid(self) -> None:
-        """"""
+        """Update grid"""
+
         paths = list(self.path.glob('*'))
         paths = [p for p in paths if not p.name.startswith('.')]
         paths.sort()
@@ -71,9 +75,13 @@ class LocalFolderPicker(ui.dialog):
         self.grid.update()
 
     def handle_double_click(self, e: events.GenericEventArguments) -> None:
+        """Handle double click"""
+
         self.path = Path(e.args['data']['path'])
         if self.path.is_dir():
             self.update_grid()
 
     def _handle_ok(self):
+        """Handle ok"""
+
         self.submit(self.path)

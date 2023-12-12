@@ -24,9 +24,12 @@ class FileModWidget(FilterLogic):
 
     def get_widget(self):
         """Return ui"""
+
         return self.tab_view()
 
     def init_mods(self):
+        """Init mods"""
+
         template = {
             'new_file_name': False,
             'split_file_name_parts': False,
@@ -59,6 +62,8 @@ class FileModWidget(FilterLogic):
                             self.mod_mask(filter_name)
 
     def update_mod(self, e):
+        """Update mod"""
+
         filter_name, mod_name = e
         if self.file_modifications[filter_name][mod_name]:
             self.file_modifications[filter_name][mod_name] = False
@@ -67,6 +72,8 @@ class FileModWidget(FilterLogic):
         self.update_available_mods(filter_name, mod_name)
 
     def update_available_mods(self, filter_name, changed_mod_name):
+        """Update available mods"""
+
         if changed_mod_name == 'new_file_name':
             for mod_name in ['add_file_prefix_suffix', 'split_file_name_parts', 'replace_file_name_parts']:
                 self.file_modifications[filter_name][mod_name] = (
@@ -124,6 +131,8 @@ class FileModWidget(FilterLogic):
                 ui.checkbox(text=mod_name_to_show, value=False).tooltip(mod_description[mod_name]).props('disable')
 
     def get_adequate_mask(self, filter_name, mod_name):
+        """Get adequate mask"""
+
         if self.file_modifications[filter_name][mod_name]:
             if mod_name == 'split_file_name_parts':
                 return self.get_split_mask(filter_name, mod_name)
@@ -138,6 +147,8 @@ class FileModWidget(FilterLogic):
                 return self.get_prefix_suffix_mask(filter_name, mod_name)
 
     def get_new_file_name_mask(self, filter_name, mod_name):
+        """Get new file name mask"""
+
         store = {'name': None}
 
         if isinstance(self.file_modifications[filter_name][mod_name], bool):
@@ -156,6 +167,8 @@ class FileModWidget(FilterLogic):
         return card
 
     def get_replace_mask(self, filter_name, mod_name):
+        """Get replace mask"""
+
         store = {
             'first': {'old': None, 'new': ''},
             'second': {'old': None, 'new': ''},
@@ -187,6 +200,8 @@ class FileModWidget(FilterLogic):
         return card
 
     def get_split_mask(self, filter_name, mod_name):
+        """Get split mask"""
+
         store = {
             'first': {'split': None, 'start': None, 'end': None},
             'second': {'split': None, 'start': None, 'end': None},
@@ -231,6 +246,8 @@ class FileModWidget(FilterLogic):
         return card
 
     def get_prefix_suffix_mask(self, filter_name, mod_name):
+        """Get prefix suffix mask"""
+
         store = {'prefix': None, 'suffix': None}
 
         if isinstance(self.file_modifications[filter_name][mod_name], bool):

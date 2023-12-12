@@ -32,6 +32,7 @@ def tokenize_filter_string(text):
 
 def create_filter_logic(tokens, search_type):
     """Create a filter string from a list of tokens"""
+
     if tokens is None:
         return None
 
