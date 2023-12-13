@@ -1,8 +1,3 @@
-import platform
-
-if platform.system() == 'Windows':
-    import win32api
-
 from pathlib import Path
 
 from nicegui import events, ui
@@ -17,7 +12,7 @@ class LocalFolderPicker(ui.dialog):
         self.upper_limit = Path('~').expanduser()
 
         with self, ui.card():
-            self.add_drives_toggle()
+
             self.grid = (
                 ui.aggrid(
                     {
@@ -34,19 +29,6 @@ class LocalFolderPicker(ui.dialog):
             with ui.row().classes('w-full justify-end'):
                 ui.button('Cancel', on_click=self.close).props('outline')
                 ui.button('Ok', on_click=self._handle_ok)
-        self.update_grid()
-
-    def add_drives_toggle(self):
-        """Windows file path encoding"""
-
-        if platform.system() == 'Windows':
-            drives = win32api.GetLogicalDriveStrings().split('\000')[:-1]
-            self.drives_toggle = ui.toggle(drives, value=drives[0], on_change=self.update_drive)
-
-    def update_drive(self):
-        """Update drive"""
-
-        self.path = Path(self.drives_toggle.value).expanduser()
         self.update_grid()
 
     def update_grid(self) -> None:
