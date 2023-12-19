@@ -29,8 +29,3 @@ $ python main.py
 $ Happy cleaning!
 ```
 
-### Supported OS
-
-- [x] Linux
-- [ ] Windows
-- [ ] Mac
