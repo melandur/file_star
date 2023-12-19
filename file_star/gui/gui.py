@@ -46,7 +46,9 @@ class FileStar:
                 text='Regex101',
                 target='https://regex101.com/',
                 new_tab=True,
-            ).classes('ml-auto text-white text-lg').tooltip('Not necessary but useful for more advanced searches')
+            ).classes(
+                'ml-auto text-white text-lg'
+            ).tooltip('Not necessary but useful for more advanced searches')
 
     def left_drawer(self):
         """Left drawer"""
@@ -285,13 +287,17 @@ class FileStar:
                     icon='expand_less',
                     on_click=lambda e: getattr(self.gui_handler, state).tree_gui.props('filter=').collapse(),
                 )
-            file_counts, top_level_folders_count = self.filters_handler.counts(state)
-
-            with ui.row().classes('w-full no-wrap'):
-                ui.label(f'Top Level Folders Count: {top_level_folders_count}').style(
-                    'font-size: 15px; font-weight: bold;'
-                )
-                ui.label(f'Files Count: {file_counts}').style('font-size: 15px; font-weight: bold;')
+            analysis = self.filters_handler.analyze_state(state)
+            for filter_name in analysis:
+                file_counts = analysis[filter_name]['files']
+                top_level_folders_count = analysis[filter_name]['top_level_folders']
+                with ui.row().classes('w-full no-wrap'):
+                    if filter_name != 'original':
+                        ui.label(f'{filter_name.upper()}:').style('font-size: 15px; font-weight: bold;')
+                    ui.label(f'Top Level Folders: {top_level_folders_count}').style(
+                        'font-size: 15px; font-weight: bold;'
+                    )
+                    ui.label(f'Files: {file_counts}').style('font-size: 15px; font-weight: bold;')
 
     @ui.refreshable
     def show_gui_tree(self, state) -> None:

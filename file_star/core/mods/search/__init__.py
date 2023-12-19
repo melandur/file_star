@@ -1,5 +1,4 @@
 from file_star.core.mods.search.search_helpers import (
-    analyze_search,
     check_for_inactive_search,
     check_search_collisions,
 )

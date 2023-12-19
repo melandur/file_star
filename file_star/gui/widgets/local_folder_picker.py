@@ -12,7 +12,6 @@ class LocalFolderPicker(ui.dialog):
         self.upper_limit = Path('~').expanduser()
 
         with self, ui.card():
-
             self.grid = (
                 ui.aggrid(
                     {

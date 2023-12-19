@@ -70,20 +70,19 @@ class FiltersHandler(Handler):
                 f'Valid names are: original, search, file_modifications, folder_modifications'
             )
 
-    def counts(self, state: str) -> (int, int):
-        """Get counts per filter"""
+    def analyze_state(self, state: str) -> dict:
+        """Analyze a search"""
 
         if state is None:
             raise AttributeError(f'No state provided')
 
         if hasattr(self, state):
-            state_attr = getattr(self, state)
-            file_counts = 0
-            top_level_folders = []
-            for filter_name in vars(state_attr):
-                subjects_iter = getattr(state_attr, filter_name)
-                relative_paths = subjects_iter.get('file_path_rel')
-                file_counts += len(relative_paths)
-                top_level_folders.extend([path.split(os.sep)[0] for path in relative_paths])
-            top_level_folders_counts = len(list(set(top_level_folders)))
-            return file_counts, top_level_folders_counts
+            filters_iter = getattr(self, state)
+            analysis = {}
+            for filter_name, subjects_iter in filters_iter.get_per_filter(attribute=None).items():
+                analysis[filter_name] = {}
+                analysis[filter_name]['files'] = len(subjects_iter)
+                top_level_folders = len(set([subject.folder_path_rel.split(os.sep)[0] for subject in subjects_iter]))
+                analysis[filter_name]['top_level_folders'] = top_level_folders
+
+            return analysis

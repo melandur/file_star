@@ -29,12 +29,3 @@ def check_for_inactive_search(filters_iter):
         if len(subjects_iter) == 0:
             inactive_search.append(filter_name)
     return inactive_search
-
-
-def analyze_search(filters_iter):
-    """Analyze a search"""
-
-    analysis = {}
-    for filter_name, subjects_iter in filters_iter.get_per_filter(attribute=None).items():
-        analysis[filter_name] = len(subjects_iter)
-    return analysis

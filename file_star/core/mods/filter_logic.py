@@ -22,7 +22,6 @@ from file_star.core.mods.search import (
     FileName,
     FolderNames,
     SearchFilter,
-    analyze_search,
     check_for_inactive_search,
     check_search_collisions,
     create_search_statements,
@@ -70,7 +69,6 @@ class FilterLogic(Handler):
 
             inactive_search = check_for_inactive_search(filters_iter)
             collision = check_search_collisions(filters_iter)
-            analsis = analyze_search(filters_iter)
             return filters_iter, collision, inactive_search
 
         return None, None, None
