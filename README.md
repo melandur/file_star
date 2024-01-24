@@ -17,15 +17,15 @@ File names and folder names can be changed per filter and are viualized in a pre
 Explain how to install your project, including any prerequisites or dependencies.
 
 ```bash
-$ git clone https://github.com/melandur/file_star.git
-$ cd file_star
-
-$ pip install -r requirements.txt
-$ or
-$ poetry install
-
-$ python main.py
-
-$ Happy cleaning!
+git clone https://github.com/melandur/file_star.git
 ```
-
+```bash
+cd file_star
+```
+```bash
+poetry install
+```
+```bash
+python main.py
+```
+Happy cleaning!
