@@ -14,8 +14,6 @@ File names and folder names can be changed per filter and are viualized in a pre
 
 ## Installation
 
-Explain how to install your project, including any prerequisites or dependencies.
-
 ```bash
 git clone https://github.com/melandur/file_star.git
 ```
