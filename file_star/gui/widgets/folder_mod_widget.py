@@ -226,8 +226,6 @@ class FolderModWidget(FilterLogic):
             self.folder_modifications[filter_name][folder_struct][mod_name] = store
 
         def helper(filter_name, folder_struct, mod_name, key, value):
-            if value < 0:
-                value = 0
             self.folder_modifications[filter_name][folder_struct][mod_name][key] = value
 
         with ui.card() as card:
@@ -237,6 +235,7 @@ class FolderModWidget(FilterLogic):
                 if self.folder_modifications[filter_name][folder_struct][mod_name] is not True
                 else None,
                 format='%d',
+                min=0,
                 on_change=lambda x, e=(filter_name, folder_struct, mod_name, 'level'): helper(*e, int(x.value)),
             ).classes('w-full no-wrap')
 
@@ -305,8 +304,6 @@ class FolderModWidget(FilterLogic):
             self.folder_modifications[filter_name][folder_struct][mod_name] = store
 
         def helper_int(filter_name, folder_struct, mod_name, step, key, value):
-            if value < 0:
-                value = 0
             self.folder_modifications[filter_name][folder_struct][mod_name][step][key] = value
 
         def helper_str(filter_name, folder_struct, mod_name, step, key, value):
@@ -329,6 +326,7 @@ class FolderModWidget(FilterLogic):
                         label='Start index',
                         value=self.folder_modifications[filter_name][folder_struct][mod_name][step]['start'],
                         format='%d',
+                        min=0,
                         on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'start'): helper_int(
                             *e, int(x.value)
                         ),
@@ -337,6 +335,7 @@ class FolderModWidget(FilterLogic):
                         label='End index',
                         value=self.folder_modifications[filter_name][folder_struct][mod_name][step]['end'],
                         format='%d',
+                        min=0,
                         on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'end'): helper_int(
                             *e, int(x.value)
                         ),

@@ -212,8 +212,6 @@ class FileModWidget(FilterLogic):
             self.file_modifications[filter_name][mod_name] = store
 
         def helper_int(filter_name, mod_name, step, key, value):
-            if value < 0:
-                value = 0
             self.file_modifications[filter_name][mod_name][step][key] = value
 
         def helper_str(filter_name, mod_name, step, key, value):
@@ -235,12 +233,14 @@ class FileModWidget(FilterLogic):
                         label='Start index',
                         value=self.file_modifications[filter_name][mod_name][step]['start'],
                         format='%d',
+                        min=0,
                         on_change=lambda x, e=(filter_name, mod_name, step, 'start'): helper_int(*e, int(x.value)),
                     )
                     ui.number(
                         label='End index',
                         value=self.file_modifications[filter_name][mod_name][step]['end'],
                         format='%d',
+                        min=0,
                         on_change=lambda x, e=(filter_name, mod_name, step, 'end'): helper_int(*e, int(x.value)),
                     )
         return card
