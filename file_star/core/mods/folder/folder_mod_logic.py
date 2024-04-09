@@ -4,10 +4,7 @@ import re
 from loguru import logger
 
 from file_star.core.mods.search.search_logic import Filter, Specification
-from file_star.core.mods.search.search_tokens import (
-    create_filter_logic,
-    tokenize_filter_string,
-)
+from file_star.core.mods.search.search_tokens import create_filter_logic, tokenize_filter_string
 
 
 class FolderNames(Specification):

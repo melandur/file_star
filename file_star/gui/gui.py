@@ -5,12 +5,7 @@ from file_star.core.subjects.filters_handler import FiltersHandler
 from file_star.core.subjects.filters_iterator import FiltersIterator
 from file_star.core.subjects.subject_creator import SubjectCreator
 from file_star.gui.gui_handler import GuiHandler
-from file_star.gui.widgets import (
-    FileModWidget,
-    FolderModWidget,
-    LocalFolderPicker,
-    SearchWidget,
-)
+from file_star.gui.widgets import FileModWidget, FolderModWidget, LocalFolderPicker, SearchWidget
 
 
 class FileStar:
