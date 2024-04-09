@@ -36,7 +36,7 @@ class SearchWidget(FilterLogic):
                     on_change=lambda x, e=key: self.search[name].update({e: str(x.value)}),
                 ).tooltip(
                     'use logic operators & for and, | for or, ~ for not, '
-                    'group logic operators with (), no need for string or char quotes, regex is supported'
+                    'group logic operators with [], no need for string or char quotes, regex is supported'
                 ).classes(
                     'w-full'
                 )
