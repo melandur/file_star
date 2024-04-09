@@ -245,6 +245,7 @@ class FileStar:
             return None
 
         ui.notify(f'Your output will be in {self.dst_path}')
+        self.expand.update({'folder_modifications': False})
         self.left_drawer_update.refresh()
 
     def execute(self):
