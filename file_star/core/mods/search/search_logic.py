@@ -1,3 +1,4 @@
+import os
 import re
 from abc import ABC, abstractmethod
 
@@ -88,15 +89,17 @@ class FolderNames(Specification):
         self.folder_name = args
 
     def is_satisfied(self, subject) -> bool:
+        folders = subject.folder_path_rel.split(os.sep)
         for folder_name in self.folder_name:
-            try:
-                if (
-                    bool(re.search(folder_name, subject.folder_path_rel))
-                    and re.search(folder_name, subject.folder_path_rel).group() != ''
-                ):
-                    return True
-            except re.error as e:
-                logger.warning(f"Regex error occurred for folder names: {e}")
+            for folder in folders:
+                try:
+                    if (
+                        bool(re.search(folder_name, folder))
+                        and re.search(folder_name, folder).group() != ''
+                    ):
+                        return True
+                except re.error as e:
+                    logger.warning(f"Regex error occurred for folder names: {e}")
 
 
 class Extension(Specification):
