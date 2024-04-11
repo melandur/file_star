@@ -21,7 +21,7 @@ class SubjectCreator:
             return None
 
         file_paths_abs = []
-        for root, dirs, files in os.walk(self.path):
+        for root, _, files in os.walk(self.path):
             for file in files:
                 file_paths_abs.append(os.path.join(root, file))
 

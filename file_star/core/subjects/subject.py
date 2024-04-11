@@ -21,92 +21,117 @@ class Subject:
 
         self.extract_info()
 
+    def __call__(self, *args, **kwargs):
+        return self
+
     @property
-    def file_name(self):
+    def file_name(self) -> str:
+        """Get the file name"""
         return self._file_name
 
     @file_name.setter
-    def file_name(self, value):
+    def file_name(self, value: str) -> None:
+        """Set the file name"""
         self._file_name = value
 
     @property
-    def extension(self):
+    def extension(self) -> str:
+        """Get the extension"""
         return self._extension
 
     @extension.setter
-    def extension(self, value):
+    def extension(self, value: str) -> None:
+        """Set the extension"""
         self._extension = value
 
     @property
-    def file_base_name(self):
+    def file_base_name(self) -> str:
+        """Get the file base name"""
         return self._file_base_name
 
     @file_base_name.setter
-    def file_base_name(self, value):
+    def file_base_name(self, value: str) -> None:
+        """Set the file base name"""
         self._file_base_name = value
 
     @property
-    def file_path_abs(self):
+    def file_path_abs(self) -> str:
+        """Get the file path absolute"""
         return self._file_path_abs
 
     @file_path_abs.setter
-    def file_path_abs(self, value):
+    def file_path_abs(self, value: str) -> None:
+        """Set the file path absolute"""
         self._file_path_abs = value
 
     @property
-    def file_path_rel(self):
+    def file_path_rel(self) -> str:
+        """Get the file path relative"""
         return self._file_path_rel
 
     @file_path_rel.setter
-    def file_path_rel(self, value):
+    def file_path_rel(self, value: str) -> None:
+        """Set the file path relative"""
         self._file_path_rel = value
 
     @property
-    def folder_path_abs(self):
+    def folder_path_abs(self) -> str:
+        """Get the folder path absolute"""
         return self._folder_path_abs
 
     @folder_path_abs.setter
-    def folder_path_abs(self, value):
+    def folder_path_abs(self, value: str) -> None:
+        """Set the folder path absolute"""
         self._folder_path_abs = value
 
     @property
-    def folder_path_rel(self):
+    def folder_path_rel(self) -> str:
+        """Get the folder path relative"""
         return self._folder_path_rel
 
     @folder_path_rel.setter
-    def folder_path_rel(self, value):
+    def folder_path_rel(self, value: str) -> None:
+        """Set the folder path relative"""
         self._folder_path_rel = value
 
     @property
-    def new_file_name(self):
+    def new_file_name(self) -> str:
+        """Get the new file name"""
         return self._new_file_name
 
     @new_file_name.setter
-    def new_file_name(self, value):
+    def new_file_name(self, value: str) -> None:
+        """Set the new file name"""
         self._new_file_name = value
 
     @property
-    def new_extension(self):
+    def new_extension(self) -> str:
+        """Get the new extension"""
         return self._new_extension
 
     @new_extension.setter
-    def new_extension(self, value):
+    def new_extension(self, value: str) -> None:
+        """Set the new extension"""
         self._new_extension = value
 
     @property
-    def new_file_path_rel(self):
+    def new_file_path_rel(self) -> str:
+        """Get the new file path relative"""
         return self._new_file_path_rel
 
     @new_file_path_rel.setter
-    def new_file_path_rel(self, value):
+    def new_file_path_rel(self, value: str) -> None:
+        """Set the new file path relative"""
         self._new_file_path_rel = value
 
     @property
-    def new_folder_path_rel(self):
+    def new_folder_path_rel(self) -> str:
+        """Get the new folder path relative"""
         return self._new_folder_path_rel
 
     @new_folder_path_rel.setter
-    def new_folder_path_rel(self, value):
+    def new_folder_path_rel(self, value: str) -> None:
+        """Set the new folder path relative"""
         self._new_folder_path_rel = value
 
     def extract_info(self) -> None:
@@ -123,7 +148,8 @@ class Subject:
         self._folder_path_abs = os.path.dirname(self._file_path_abs)
         self._folder_path_rel = os.path.dirname(self._file_path_rel)
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return the subject as a string"""
         return json.dumps(
             {
                 'file_name': self._file_name,

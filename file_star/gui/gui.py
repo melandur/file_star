@@ -11,7 +11,7 @@ from file_star.gui.widgets import FileModWidget, FolderModWidget, LocalFolderPic
 class FileStar:
     """File Star"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.src_path = None
         self.dst_path = None
 
@@ -26,13 +26,13 @@ class FileStar:
         self.file_mod_widget = FileModWidget()
         self.folder_mod_widget = FolderModWidget()
 
-    def __call__(self):
+    def __call__(self) -> None:
         self.header()
         self.left_drawer()
         self.tree_view()
 
     @staticmethod
-    def header():
+    def header() -> None:
         """Header"""
 
         with ui.header().classes('w-full no-wrap'):
@@ -45,7 +45,7 @@ class FileStar:
                 'ml-auto text-white text-lg'
             ).tooltip('Not necessary but useful for more advanced searches')
 
-    def left_drawer(self):
+    def left_drawer(self) -> None:
         """Left drawer"""
 
         with ui.left_drawer().classes('bg-blue-100 w-full h-full').props('width=400'):
@@ -53,7 +53,7 @@ class FileStar:
             self.left_drawer_update()
 
     @ui.refreshable
-    def left_drawer_update(self):
+    def left_drawer_update(self) -> None:
         """Left drawer update"""
 
         if self.gui_handler.original:
@@ -101,7 +101,7 @@ class FileStar:
                 else:
                     ui.button(text='Export', icon='play_arrow', on_click=self.execute).classes('w-full').props('hidden')
 
-    def tree_view(self):
+    def tree_view(self) -> None:
         """Tree view"""
 
         with ui.row().classes('w-full h-full no-wrap'):
@@ -110,7 +110,7 @@ class FileStar:
             self.show_gui_tree('file_modifications')
             self.show_gui_tree('folder_modifications')
 
-    def process_search(self):
+    def process_search(self) -> None:
         """Process filters"""
 
         filters_iter, collisions, inactive = self.filter_logic.apply_search(self.filters_handler)
@@ -147,7 +147,7 @@ class FileStar:
         self.filters_handler.set(state='search', filters_iter=filters_iter)
         self.update_state(self.filters_handler, state='search', path_type='file_path_rel')
 
-    def process_file_mods(self):
+    def process_file_mods(self) -> None:
         """Process file modifications"""
 
         filters_iter = self.filter_logic.apply_file_modifications(self.filters_handler)
@@ -160,7 +160,7 @@ class FileStar:
         self.expand.update({'search': False})
         self.update_state(self.filters_handler, state='file_modifications', path_type='new_file_path_rel')
 
-    def process_folder_mods(self):
+    def process_folder_mods(self) -> None:
         """Process folder modifications"""
 
         filters_iter = self.filter_logic.apply_folder_modifications(self.filters_handler)
@@ -205,14 +205,14 @@ class FileStar:
         self.src_path = src_path
         self.update_state(self.filters_handler, state='original', path_type='file_path_rel')
 
-    def update_state(self, subject_handler, state, path_type):
+    def update_state(self, subject_handler, state, path_type) -> None:
         """Update the gui state"""
 
         self.gui_handler.subject_handler_to_gui_handler(subject_handler, state, path_type)
         self.show_gui_tree.refresh()
         self.left_drawer_update.refresh()
 
-    def reset_gui(self):
+    def reset_gui(self) -> None:
         """Reset the gui"""
 
         self.src_path = None
@@ -243,7 +243,7 @@ class FileStar:
         self.expand.update({'folder_modifications': False})
         self.left_drawer_update.refresh()
 
-    def execute(self):
+    def execute(self) -> None:
         """Execute the file modifications"""
 
         if self.dst_path is None:
@@ -253,7 +253,7 @@ class FileStar:
         self.filter_logic.apply_new_structure(self.filters_handler, self.dst_path)
         ui.notify(message=f'Copied files to new structure in {self.dst_path}', type='positive')
 
-    def tree_menu(self, state):
+    def tree_menu(self, state) -> None:
         """Tree menu"""
 
         def tree_filter(e, _state):

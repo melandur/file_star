@@ -7,9 +7,6 @@ from file_star.core.subjects.filters_handler import FiltersHandler
 class GuiHandler(Handler):
     """Gui handler"""
 
-    def __init__(self) -> None:
-        super().__init__()
-
     def subject_handler_to_gui_handler(
         self,
         subjects_handler: FiltersHandler = None,
@@ -36,18 +33,22 @@ class GuiHelper:
 
     @property
     def tree_format(self):
+        """Get the tree format"""
         return self._tree_format
 
     @tree_format.setter
     def tree_format(self, value):
+        """Set the tree format"""
         self._tree_format = value
 
     @property
     def tree_gui(self):
+        """Get the tree gui"""
         return self._tree_gui
 
     @tree_gui.setter
     def tree_gui(self, value):
+        """Set the tree gui"""
         self._tree_gui = value
 
     def _get_tree_format(self, path_type, limit) -> dict or None:

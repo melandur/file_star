@@ -1,3 +1,5 @@
+# pylint: disable=W0611
+
 import copy
 import os
 import shutil
@@ -35,7 +37,7 @@ class FilterLogic(Handler):
 
     _shared_state = {}  # Class attribute to store shared state
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         super().__init__()
         self.__dict__ = self._shared_state  # Assign the shared state to the instance's __dict__
         self.filter_names = []
@@ -86,14 +88,14 @@ class FilterLogic(Handler):
         for filter_name, subjects in subject_handler.get_subjects_per_filters(state='search', attribute=None).items():
             subjects_per_filter = []
             for subject in subjects:
-                tmp_subject = copy.deepcopy(subject)
-                tmp_subject.new_file_name = subject.file_base_name
-                tmp_subject.new_extension = subject.extension
-                tmp_subject.new_file_path_rel = subject.file_path_rel
+                _subject = copy.deepcopy(subject)
+                _subject.new_file_name = subject.file_base_name
+                _subject.new_extension = subject.extension
+                _subject.new_file_path_rel = subject.file_path_rel
 
                 for mod_name in self.file_modifications[filter_name]:
                     if self.file_modifications[filter_name][mod_name]:
-                        tmp_subject = eval(mod_name)(tmp_subject, self.file_modifications[filter_name][mod_name])
+                        tmp_subject = eval(mod_name)(_subject, self.file_modifications[filter_name][mod_name])
 
                 subjects_per_filter.append(tmp_subject)
             filters_iter[filter_name] = SubjectsIterator(subjects_per_filter)
@@ -143,18 +145,19 @@ class FilterLogic(Handler):
 
     @staticmethod
     def apply_new_structure(subject_handler, dst_path: str) -> None:
+        """Apply new structure to a list of file paths"""
+
         if subject_handler.folder_modifications is None:
-            return None
+            raise AttributeError('No folder modifications provided.')
 
         if dst_path is None:
-            return None
+            raise AttributeError('No destination path provided.')
 
-        for _, subjects in subject_handler.get_subjects_per_filters(
-            state='folder_modifications', attribute=None
-        ).items():
+        subject_per_filters = subject_handler.get_subjects_per_filters(state='folder_modifications', attribute=None)
+        for _, subjects in subject_per_filters.items():
             for subject in subjects:
                 new_folder_path_abs = os.path.join(dst_path, subject.new_folder_path_rel)
                 os.makedirs(new_folder_path_abs, exist_ok=True)
-                new_file_name = f'{subject.new_file_name}.{subject.new_extension}'
-                new_file_path_abs = os.path.join(new_folder_path_abs, new_file_name)
+                tmp_new_file_name = f'{subject.new_file_name}.{subject.new_extension}'
+                new_file_path_abs = os.path.join(new_folder_path_abs, tmp_new_file_name)
                 shutil.copy(subject.file_path_abs, new_file_path_abs)

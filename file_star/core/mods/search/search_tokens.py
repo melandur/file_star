@@ -47,7 +47,7 @@ def create_filter_logic(tokens, search_type):
             result += ' ('
         elif token == ']':
             result += ' )'
-        elif token == '&' or token == '|':
+        elif token in ('&', '|'):
             result += f' {token}'
         elif '~' in token:
             result += f' ~{search_type}("{token[1:]}")'

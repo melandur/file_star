@@ -14,7 +14,7 @@ def check_search_collisions(filters_iter):
             colliding_paths = list(set(filter_file_paths_rel[combo[0]]) & set(filter_file_paths_rel[combo[1]]))
             collisions[f'{combo[0]}_&_{combo[1]}'] = colliding_paths
 
-    for key in collisions:
+    for key in collisions.keys():
         if len(collisions[key]) > 5:  # limit example collisions to 5
             collisions[key] = collisions[key][:5]
 

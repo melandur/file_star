@@ -16,6 +16,7 @@ class FolderNames(Specification):
     def is_satisfied(self, folder) -> bool:
         if any(x for x in self.folder_name if x in folder):
             return True
+        return False
 
 
 class SearchFilter(Filter):

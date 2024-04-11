@@ -10,7 +10,7 @@ class Specification(ABC):
 
     @abstractmethod
     def is_satisfied(self, item: list) -> bool:
-        pass
+        """Abstract method for checking if a specification is satisfied"""
 
     def __and__(self, other):
         """Overload the & operator to check if all specifications are satisfied"""
@@ -61,7 +61,6 @@ class Filter(ABC):
     @abstractmethod
     def filter(self, item: dict, spec: Specification) -> object:
         """Abstract method for filtering"""
-        pass
 
 
 class FileName(Specification):
@@ -71,6 +70,7 @@ class FileName(Specification):
         self.file_names = args
 
     def is_satisfied(self, subject) -> bool:
+        """Check if a file name is satisfied by a specification"""
         for file_name in self.file_names:
             try:
                 if (
@@ -80,6 +80,7 @@ class FileName(Specification):
                     return True
             except re.error as e:
                 logger.warning(f"Regex error occurred for file names: {e}")
+        return False
 
 
 class FolderNames(Specification):
@@ -89,17 +90,16 @@ class FolderNames(Specification):
         self.folder_name = args
 
     def is_satisfied(self, subject) -> bool:
+        """Check if a folder name is satisfied by a specification"""
         folders = subject.folder_path_rel.split(os.sep)
         for folder_name in self.folder_name:
             for folder in folders:
                 try:
-                    if (
-                        bool(re.search(folder_name, folder))
-                        and re.search(folder_name, folder).group() != ''
-                    ):
+                    if bool(re.search(folder_name, folder)) and re.search(folder_name, folder).group() != '':
                         return True
                 except re.error as e:
                     logger.warning(f"Regex error occurred for folder names: {e}")
+        return False
 
 
 class Extension(Specification):
@@ -109,6 +109,7 @@ class Extension(Specification):
         self.extension = args
 
     def is_satisfied(self, subject) -> bool:
+        """Check if an extension is satisfied by a specification"""
         for extension in self.extension:
             try:
                 if (
@@ -118,12 +119,14 @@ class Extension(Specification):
                     return True
             except re.error as e:
                 logger.warning(f"Regex error occurred for extension: {e}")
+        return False
 
 
 class SearchFilter(Filter):
     """Search filter loop"""
 
     def filter(self, subject_iter: list, spec: Specification) -> dict:
+        """Filter a list of subjects by a specification"""
         for subject in subject_iter:
             if spec.is_satisfied(subject):
                 yield subject

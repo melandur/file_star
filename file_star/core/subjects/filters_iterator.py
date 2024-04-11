@@ -12,6 +12,7 @@ class FiltersIterator:
         return str(self.__dict__)
 
     def get_keys(self):
+        """Get a list of keys from a filter of subjects"""
         return list(self.__dict__.keys())
 
     def get_per_filter(self, attribute: str = None) -> dict:
@@ -24,13 +25,13 @@ class FiltersIterator:
     def get(self, filter_name: str = None, attribute: str = None) -> list:
         """Get a list of attributes from a filter of subjects"""
         if filter_name is None:
-            raise AttributeError(f'No filter name provided')
+            raise AttributeError('No filter name provided')
 
         if hasattr(self, filter_name):
             subject_iter = getattr(self, filter_name)
             return subject_iter.get(attribute)
-        else:
-            raise AttributeError(
-                f'Filter {filter_name} does not exist.'
-                f'Valid names are: original, search, file_modifications, folder_modifications'
-            )
+
+        raise AttributeError(
+            f'Filter {filter_name} does not exist.'
+            f'Valid names are: original, search, file_modifications, folder_modifications'
+        )
