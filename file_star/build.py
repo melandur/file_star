@@ -22,7 +22,7 @@ class Build:
             'envs',
             'file_star',
             'lib',
-            'python3.10',
+            'python3.12',
             'site-packages',
         )
 
