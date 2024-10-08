@@ -139,7 +139,7 @@ class Subject:
         self._file_name = os.path.basename(self._file_path_abs)
 
         if '.' in self._file_name:
-            self._file_base_name, self._extension = self._file_name.split('.', 1)
+            self._file_base_name, self._extension = self._file_name.split('.', 1)  # split at the first dot
         else:
             self._file_base_name = self._file_name
             self._extension = ''

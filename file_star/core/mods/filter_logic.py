@@ -130,7 +130,7 @@ class FilterLogic(Handler):
                 if tmp_folder_names:  # if there are folder modifications else use the original folder path
                     new_folder_path_rel = os.path.join(*tmp_folder_names)
                 else:
-                    new_folder_path_rel = subject.new_folder_path_rel
+                    new_folder_path_rel = subject.folder_path_rel
 
                 subject.new_folder_path_rel = new_folder_path_rel
                 new_file = f'{subject.new_file_name}.{subject.new_extension}'
