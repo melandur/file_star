@@ -116,3 +116,27 @@ def add_folder_prefix_suffix(subject, fixes):
         subject.new_folder_path_rel = f'{subject.new_folder_path_rel}{fixes["suffix"]}'
 
     return subject
+
+
+def create_folder_from_file_name(subject, states):
+    """Create folder name from file name"""
+
+    for _, values in states.items():
+        if values['split'] is None or values['start'] is None or values['end'] is None:
+            continue
+
+        if values['start'] > values['end']:
+            continue
+
+        if values['start'] < 0 or values['end'] < 0:
+            continue
+
+        if values['split'] in subject.new_file_name:
+            folder_names = subject.new_file_name.split(values['split'])
+
+            if values['end'] <= len(folder_names):
+                subject.new_folder_path_rel = f'{values["split"]}'.join(
+                    folder_names[values['start'] : values['end'] + 1]
+                )
+
+    return subject

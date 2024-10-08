@@ -44,6 +44,7 @@ class FolderModWidget(FilterLogic):
             'find_folder_by_level': False,
             'find_folder_by_name': False,
             'new_folder_name': False,
+            'create_folder_from_file_name': False,
             'split_folder_name_parts': None,
             'replace_folder_name_parts': None,
             'add_folder_prefix_suffix': None,
@@ -95,14 +96,14 @@ class FolderModWidget(FilterLogic):
 
         if mod_name == 'find_folder_by_level':
             if self.folder_modifications[filter_name][folder_struct][mod_name]:
-                for mod_name in ['find_folder_by_name', 'new_folder_name']:
+                for mod_name in ['find_folder_by_name', 'new_folder_name', 'create_folder_from_file_name']:
                     self.folder_modifications[filter_name][folder_struct][mod_name] = None
 
                 for mod_name in ['split_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
                     if mod_name in self.folder_modifications[filter_name][folder_struct]:
                         self.folder_modifications[filter_name][folder_struct][mod_name] = False
             else:
-                for mod_name in ['find_folder_by_name', 'new_folder_name']:
+                for mod_name in ['find_folder_by_name', 'new_folder_name', 'create_folder_from_file_name']:
                     self.folder_modifications[filter_name][folder_struct][mod_name] = False
 
                 for mod_name in ['split_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
@@ -111,7 +112,7 @@ class FolderModWidget(FilterLogic):
 
         elif mod_name == 'find_folder_by_name':
             if self.folder_modifications[filter_name][folder_struct][mod_name]:
-                for mod_name in ['find_folder_by_level', 'new_folder_name']:
+                for mod_name in ['find_folder_by_level', 'new_folder_name', 'create_folder_from_file_name']:
                     if mod_name in self.folder_modifications[filter_name][folder_struct]:
                         self.folder_modifications[filter_name][folder_struct][mod_name] = None
 
@@ -119,7 +120,7 @@ class FolderModWidget(FilterLogic):
                     if mod_name in self.folder_modifications[filter_name][folder_struct]:
                         self.folder_modifications[filter_name][folder_struct][mod_name] = False
             else:
-                for mod_name in ['find_folder_by_level', 'new_folder_name']:
+                for mod_name in ['find_folder_by_level', 'new_folder_name', 'create_folder_from_file_name']:
                     if mod_name in self.folder_modifications[filter_name][folder_struct]:
                         self.folder_modifications[filter_name][folder_struct][mod_name] = False
 
@@ -132,6 +133,7 @@ class FolderModWidget(FilterLogic):
                 for mod_name in [
                     'find_folder_by_level',
                     'find_folder_by_name',
+                    'create_folder_from_file_name',
                     'split_folder_name_parts',
                     'replace_folder_name_parts',
                     'add_folder_prefix_suffix',
@@ -140,8 +142,24 @@ class FolderModWidget(FilterLogic):
                         self.folder_modifications[filter_name][folder_struct][mod_name] = None
 
             else:
-                for mod_name in ['find_folder_by_level', 'find_folder_by_name']:
+                for mod_name in ['find_folder_by_level', 'find_folder_by_name', 'create_folder_from_file_name']:
                     self.folder_modifications[filter_name][folder_struct][mod_name] = False
+
+        elif mod_name == 'create_folder_from_file_name':
+            if self.folder_modifications[filter_name][folder_struct][mod_name]:
+                for mod_name in ['find_folder_by_level', 'find_folder_by_name', 'new_folder_name']:
+                    self.folder_modifications[filter_name][folder_struct][mod_name] = None
+
+                for mod_name in ['split_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
+                    if mod_name in self.folder_modifications[filter_name][folder_struct]:
+                        self.folder_modifications[filter_name][folder_struct][mod_name] = False
+            else:
+                for mod_name in ['find_folder_by_level', 'find_folder_by_name', 'new_folder_name']:
+                    self.folder_modifications[filter_name][folder_struct][mod_name] = False
+
+                for mod_name in ['split_folder_name_parts', 'replace_folder_name_parts', 'add_folder_prefix_suffix']:
+                    if mod_name in self.folder_modifications[filter_name][folder_struct]:
+                        self.folder_modifications[filter_name][folder_struct][mod_name] = None
 
         self.tab_view.refresh()
 
@@ -161,6 +179,7 @@ class FolderModWidget(FilterLogic):
             'find_folder_by_level': 'Find folder by level',
             'find_folder_by_name': 'Find folder by name',
             'new_folder_name': 'Replace current folder name with new folder name',
+            'create_folder_from_file_name': 'Create folder from file name',
             'split_folder_name_parts': 'Split certain parts of folder name',
             'replace_folder_name_parts': 'Replace certain parts of folder name with new parts',
             'add_folder_prefix_suffix': 'Add prefix and/or suffix to folder name',
@@ -207,6 +226,9 @@ class FolderModWidget(FilterLogic):
 
             if mod_name == 'new_folder_name':
                 return self.new_folder_name_mask(filter_name, folder_struct, mod_name)
+
+            if mod_name == 'create_folder_from_file_name':
+                return self.create_folder_from_file_name_mask(filter_name, folder_struct, mod_name)
 
             if mod_name == 'split_folder_name_parts':
                 return self.get_split_mask(filter_name, folder_struct, mod_name)
@@ -289,6 +311,57 @@ class FolderModWidget(FilterLogic):
                 else None,
                 on_change=lambda x, e=(filter_name, folder_struct, mod_name, 'name'): helper(*e, x.value),
             ).classes('w-full no-wrap')
+        return card
+
+    def create_folder_from_file_name_mask(self, filter_name, folder_struct, mod_name):
+        """Create folder from file name mask"""
+
+        store = {
+            'first': {'split': None, 'start': None, 'end': None},
+            'second': {'split': None, 'start': None, 'end': None},
+            'third': {'split': None, 'start': None, 'end': None},
+        }
+
+        if isinstance(self.folder_modifications[filter_name][folder_struct][mod_name], bool):
+            self.folder_modifications[filter_name][folder_struct][mod_name] = store
+
+        def helper_int(filter_name, folder_struct, mod_name, step, key, value):
+            self.folder_modifications[filter_name][folder_struct][mod_name][step][key] = value
+
+        def helper_str(filter_name, folder_struct, mod_name, step, key, value):
+            self.folder_modifications[filter_name][folder_struct][mod_name][step][key] = value
+
+        with ui.card() as card:
+            ui.label('Name will split by split char, keeps splitted names in range start to end index')
+            ui.label('The selected name parts will be joined with the split char afterwards')
+            for step in store:
+                ui.label(f'{step.capitalize()} stage')
+                with ui.row().classes('w-full no-wrap'):
+                    ui.input(
+                        'Split char',
+                        value=self.folder_modifications[filter_name][folder_struct][mod_name][step]['split'],
+                        on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'split'): helper_str(
+                            *e, x.value
+                        ),
+                    )
+                    ui.number(
+                        label='Start index',
+                        value=self.folder_modifications[filter_name][folder_struct][mod_name][step]['start'],
+                        format='%d',
+                        min=0,
+                        on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'start'): helper_int(
+                            *e, int(x.value)
+                        ),
+                    )
+                    ui.number(
+                        label='End index',
+                        value=self.folder_modifications[filter_name][folder_struct][mod_name][step]['end'],
+                        format='%d',
+                        min=0,
+                        on_change=lambda x, e=(filter_name, folder_struct, mod_name, step, 'end'): helper_int(
+                            *e, int(x.value)
+                        ),
+                    )
         return card
 
     def get_split_mask(self, filter_name, folder_struct, mod_name):

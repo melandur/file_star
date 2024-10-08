@@ -15,6 +15,7 @@ from file_star.core.mods.folder.folder_mod_logic import (  # needed for new_fold
     add_folder_prefix_suffix,
     find_folder_by_level,
     find_folder_by_name,
+    create_folder_from_file_name,
     new_folder_name,
     replace_folder_name_parts,
     split_folder_name_parts,
