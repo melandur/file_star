@@ -118,5 +118,5 @@ class SearchWidget(FilterLogic):
             self.dialog.open()
             self.search_name = ui.input('Filter Name').props('autofocus')
             with ui.row():
-                ui.button('Save', on_click=add)
                 ui.button('Close', on_click=self.dialog.close)
+                ui.button('Save', on_click=add)

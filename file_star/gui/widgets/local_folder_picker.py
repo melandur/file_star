@@ -49,7 +49,7 @@ class LocalFolderPicker(ui.dialog):
             self.grid.options['rowData'].insert(
                 0,
                 {
-                    'name': '📁 <strong>..</strong>',
+                    'name': '📁 <strong>🡄</strong>',
                     'path': str(self.path.parent),
                 },
             )

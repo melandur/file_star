@@ -88,14 +88,11 @@ class FilterLogic(Handler):
         for filter_name, subjects in subject_handler.get_subjects_per_filters(state='search', attribute=None).items():
             subjects_per_filter = []
             for subject in subjects:
-                _subject = copy.deepcopy(subject)
-                _subject.new_file_name = subject.file_base_name
-                _subject.new_extension = subject.extension
-                _subject.new_file_path_rel = subject.file_path_rel
+                tmp_subject = copy.deepcopy(subject)
 
                 for mod_name in self.file_modifications[filter_name]:
                     if self.file_modifications[filter_name][mod_name]:
-                        tmp_subject = eval(mod_name)(_subject, self.file_modifications[filter_name][mod_name])
+                        tmp_subject = eval(mod_name)(tmp_subject, self.file_modifications[filter_name][mod_name])
 
                 subjects_per_filter.append(tmp_subject)
             filters_iter[filter_name] = SubjectsIterator(subjects_per_filter)
@@ -113,31 +110,23 @@ class FilterLogic(Handler):
 
         filters_iter = FiltersIterator()
         for filter_name, subjects in subject_handler.get_subjects_per_filters(
-            state='file_modifications', attribute=None
+                state='file_modifications', attribute=None
         ).items():
             subjects_per_filter = []
             for subject in subjects:
                 tmp_subject = copy.deepcopy(subject)
 
-                tmp_folder_path = []
                 for folder_struct in self.folder_modifications[filter_name]:
-                    tmp_subject.new_folder_path_rel = None
                     for mod_name in self.folder_modifications[filter_name][folder_struct]:
                         if self.folder_modifications[filter_name][folder_struct][mod_name]:
                             tmp_subject = eval(mod_name)(
                                 tmp_subject, self.folder_modifications[filter_name][folder_struct][mod_name]
                             )
 
-                    if tmp_subject.new_folder_path_rel:
-                        tmp_folder_path.append(tmp_subject.new_folder_path_rel)
+                tmp_subject.new_file_path_rel = os.path.join(tmp_subject.new_folder_path_rel,
+                                                             f'{tmp_subject.new_file_name}.{tmp_subject.new_extension}')
 
-                if tmp_folder_path:  # if tmp_folder_path is not empty create new folder path rel
-                    tmp_subject.new_folder_path_rel = os.path.join(*tmp_folder_path)
-                    file_name = f'{tmp_subject.new_file_name}.{tmp_subject.new_extension}'
-                    tmp_subject.new_file_path_rel = os.path.join(tmp_subject.new_folder_path_rel, file_name)
-                    subjects_per_filter.append(tmp_subject)
-                else:
-                    subjects_per_filter.append(subject)
+                subjects_per_filter.append(tmp_subject)
 
             filters_iter[filter_name] = SubjectsIterator(subjects_per_filter)
 

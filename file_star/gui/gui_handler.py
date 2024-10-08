@@ -29,7 +29,7 @@ class GuiHelper:
         self._tree_format = {}
         self._tree_gui = None
 
-        self._get_tree_format(path_type, limit=5000)
+        self._get_tree_format(path_type)
 
     @property
     def tree_format(self):
@@ -51,7 +51,7 @@ class GuiHelper:
         """Set the tree gui"""
         self._tree_gui = value
 
-    def _get_tree_format(self, path_type, limit) -> dict or None:
+    def _get_tree_format(self, path_type) -> dict or None:
         """Convert a list of file paths into a tree structure"""
 
         if getattr(self.filters_handler, self.state) is None:
@@ -69,7 +69,6 @@ class GuiHelper:
                 file_paths.append(subject.file_path_rel)
 
         file_paths.sort()
-        file_paths = file_paths[:limit]
 
         for file_path_rel in file_paths:
             parts = file_path_rel.split(os.sep)

@@ -94,12 +94,7 @@ class FileStar:
             ).classes(
                 'w-full'
             ).props('header-class="bg-primary text-white font-bold text-lg"'):
-                ui.button(text='Set Destination', icon='output', on_click=self.pick_destination).classes('w-full')
-
-                if self.dst_path:
-                    ui.button(text='Export', icon='play_arrow', on_click=self.execute).classes('w-full')
-                else:
-                    ui.button(text='Export', icon='play_arrow', on_click=self.execute).classes('w-full').props('hidden')
+                ui.button(text='Export', icon='output', on_click=self.export).classes('w-full')
 
     def tree_view(self) -> None:
         """Tree view"""
@@ -193,15 +188,6 @@ class FileStar:
             ui.notify(message=f'No files found in {src_path}', type='negative')
             return None
 
-        if len(subject_iter) >= 5000:
-            ui.notify(
-                message="To many files to show, only the first 5'000 are presented here."
-                f"However, all of the files in {src_path} will be processed.",
-                multi_line=True,
-                type='info',
-            )
-            self.show_tree['original'] = False
-
         self.src_path = src_path
         self.update_state(self.filters_handler, state='original', path_type='file_path_rel')
 
@@ -232,24 +218,20 @@ class FileStar:
         self.left_drawer_update.refresh()
         self.show_gui_tree.refresh()
 
-    async def pick_destination(self) -> None:
+    async def export(self) -> None:
         """Pick destination folder"""
 
         self.dst_path = await LocalFolderPicker('~')
         if self.dst_path is None:
             return None
 
-        ui.notify(f'Your output will be in {self.dst_path}')
         self.expand.update({'folder_modifications': False})
-        self.left_drawer_update.refresh()
-
-    def execute(self) -> None:
-        """Execute the file modifications"""
 
         if self.dst_path is None:
             ui.notify(message='You must first set the destination folder', type='info')
             return None
 
+        print(self.dst_path)
         self.filter_logic.apply_new_structure(self.filters_handler, self.dst_path)
         ui.notify(message=f'Copied files to new structure in {self.dst_path}', type='positive')
 
