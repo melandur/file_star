@@ -52,6 +52,7 @@ class Build:
             '--nofollow-import-to=nuitka '
             '--nofollow-import-to=unittest '
             '--nofollow-import-to=doctest '
+            '--nofollow-import-to=certifi '
             f'--include-data-dir={self.user_env_path}{os.sep}nicegui=nicegui '
             f'--output-dir={self.build_path} '
             f'--output-filename=file_star '
