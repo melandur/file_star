@@ -151,7 +151,6 @@ class Subject:
         self._new_file_name = self._file_base_name
         self._new_extension = self._extension
         self._new_file_path_rel = self._file_path_rel
-        self._new_folder_path_rel = self._folder_path_rel
 
     def __str__(self) -> str:
         """Return the subject as a string"""

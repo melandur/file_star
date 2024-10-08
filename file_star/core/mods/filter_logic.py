@@ -114,19 +114,28 @@ class FilterLogic(Handler):
         ).items():
             subjects_per_filter = []
             for subject in subjects:
-                tmp_subject = copy.deepcopy(subject)
-
+                tmp_folder_names = []
                 for folder_struct in self.folder_modifications[filter_name]:
+                    tmp_subject = copy.deepcopy(subject)
                     for mod_name in self.folder_modifications[filter_name][folder_struct]:
                         if self.folder_modifications[filter_name][folder_struct][mod_name]:
                             tmp_subject = eval(mod_name)(
                                 tmp_subject, self.folder_modifications[filter_name][folder_struct][mod_name]
                             )
 
-                tmp_subject.new_file_path_rel = os.path.join(tmp_subject.new_folder_path_rel,
-                                                             f'{tmp_subject.new_file_name}.{tmp_subject.new_extension}')
+                    if tmp_subject.new_folder_path_rel:
+                        tmp_folder_names.append(tmp_subject.new_folder_path_rel)
 
-                subjects_per_filter.append(tmp_subject)
+                if tmp_folder_names:  # if there are folder modifications else use the original folder path
+                    new_folder_path_rel = os.path.join(*tmp_folder_names)
+                else:
+                    new_folder_path_rel = subject.new_folder_path_rel
+
+                subject.new_folder_path_rel = new_folder_path_rel
+                new_file = f'{subject.new_file_name}.{subject.new_extension}'
+                subject.new_file_path_rel = os.path.join(new_folder_path_rel, new_file)
+
+                subjects_per_filter.append(subject)
 
             filters_iter[filter_name] = SubjectsIterator(subjects_per_filter)
 
