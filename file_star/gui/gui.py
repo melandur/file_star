@@ -231,7 +231,6 @@ class FileStar:
             ui.notify(message='You must first set the destination folder', type='info')
             return None
 
-        print(self.dst_path)
         self.filter_logic.apply_new_structure(self.filters_handler, self.dst_path)
         ui.notify(message=f'Copied files to new structure in {self.dst_path}', type='positive')
 
