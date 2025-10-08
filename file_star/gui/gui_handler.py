@@ -51,7 +51,7 @@ class GuiHelper:
         """Set the tree gui"""
         self._tree_gui = value
 
-    def _get_tree_format(self, path_type) -> dict or None:
+    def _get_tree_format(self, path_type) -> dict | None:
         """Convert a list of file paths into a tree structure"""
 
         if getattr(self.filters_handler, self.state) is None:

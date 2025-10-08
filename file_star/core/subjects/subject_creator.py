@@ -1,9 +1,16 @@
 import os
+from multiprocessing import Pool, cpu_count
 
 from loguru import logger
 
 from file_star.core.subjects.subject import Subject
 from file_star.core.subjects.subjects_iterator import SubjectsIterator
+
+
+def create_subject(args) -> Subject:
+    """Helper function for multiprocessing"""
+    base_path, file_path_abs = args
+    return Subject(base_path, file_path_abs)
 
 
 class SubjectCreator:
@@ -27,7 +34,9 @@ class SubjectCreator:
 
         file_paths_abs.sort()
 
-        subjects = []
-        for file_path_abs in file_paths_abs:
-            subjects.append(Subject(self.path, file_path_abs))
+        args_list = [(self.path, fp) for fp in file_paths_abs]
+
+        with Pool(cpu_count()) as pool:
+            subjects = pool.map(create_subject, args_list)
+        
         return SubjectsIterator(subjects)

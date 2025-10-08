@@ -290,6 +290,22 @@ class FileStar:
                 self.tree_menu(state)
                 if self.show_tree[state]:
                     with ui.scroll_area().style('height: 1000px;'):
-                        tree = ui.tree(getattr(self.gui_handler, state).tree_format, label_key='id').expand()
+                        tree = ui.tree(getattr(self.gui_handler, state).tree_format, label_key='id')
                         del tree._props['selected']
+
+                        tree.on('lazy-load', js_handler='''({ node, key, done, fail }) => {
+                            console.log('lazy-load', node)
+                            fetch(`/tmodel/get-tree-children?object_type=${node.type}&object_id=${node.id}`)
+                            .then(response => response.json())
+                            .then(data => done(data))
+                            .catch(fail);
+                        }''')
+
+                        tree.on('update:selected', js_handler='''(event) => {
+                            console.log('select event:', event)
+                        }''')
+
+                        tree.on('after-expand', lambda e: print('Expanded:', e.args))
+                        tree.on('after-collapse', lambda e: print('Collapsed:', e.args))
+
                         getattr(self.gui_handler, state).tree_gui = tree
