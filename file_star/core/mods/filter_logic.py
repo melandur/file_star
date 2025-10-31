@@ -3,6 +3,7 @@
 import copy
 import os
 import shutil
+from concurrent.futures import ThreadPoolExecutor
 
 from file_star.core.handler import Handler
 from file_star.core.mods.file.file_mod_logic import (  # needed for file_modifications
@@ -13,9 +14,9 @@ from file_star.core.mods.file.file_mod_logic import (  # needed for file_modific
 )
 from file_star.core.mods.folder.folder_mod_logic import (  # needed for new_folder_modifications
     add_folder_prefix_suffix,
+    create_folder_from_file_name,
     find_folder_by_level,
     find_folder_by_name,
-    create_folder_from_file_name,
     new_folder_name,
     replace_folder_name_parts,
     split_folder_name_parts,
@@ -63,18 +64,59 @@ class FilterLogic(Handler):
                 state='original', filter_name='original', attribute=None
             )
 
-            for filter_name in filter_statements:
-                subjects_per_filter = []
-                for subject in sf.filter(subjects['original'], eval(filter_statements[filter_name])):
-                    subjects_per_filter.append(subject)
-
-                filters_iter[filter_name] = SubjectsIterator(subjects_per_filter)
+            # Parallelize filter application across multiple filters
+            subjects_list = subjects['original']
+            if len(subjects_list) > 100:  # Only parallelize for large datasets
+                filters_iter = self._apply_search_parallel(subjects_list, filter_statements, sf)
+            else:
+                # Sequential processing for small datasets
+                for filter_name in filter_statements:
+                    subjects_per_filter = []
+                    for subject in sf.filter(subjects_list, eval(filter_statements[filter_name])):
+                        subjects_per_filter.append(subject)
+                    filters_iter[filter_name] = SubjectsIterator(subjects_per_filter)
 
             inactive_search = check_for_inactive_search(filters_iter)
             collision = check_search_collisions(filters_iter)
             return filters_iter, collision, inactive_search
 
         return None, None, None
+
+    def _apply_search_parallel(self, subjects_list, filter_statements, sf):
+        """Apply search filters in parallel"""
+        filters_iter = FiltersIterator()
+
+        def apply_single_filter(filter_name, filter_statement):
+            """Apply a single filter"""
+            subjects_per_filter = []
+            spec = eval(filter_statement)
+            for subject in sf.filter(subjects_list, spec):
+                subjects_per_filter.append(subject)
+            return filter_name, subjects_per_filter
+
+        # Parallelize filter application across multiple filters
+        num_workers = min(len(filter_statements), os.cpu_count() or 1)
+
+        with ThreadPoolExecutor(max_workers=num_workers) as executor:
+            futures = []
+            for filter_name, filter_statement in filter_statements.items():
+                # Process each filter with all subjects
+                future = executor.submit(apply_single_filter, filter_name, filter_statement)
+                futures.append((filter_name, future))
+
+            for filter_name, future in futures:
+                try:
+                    _, subjects_per_filter = future.result()
+                    filters_iter[filter_name] = SubjectsIterator(subjects_per_filter)
+                except Exception as e:
+                    # Fallback to sequential processing on error
+                    subjects_per_filter = []
+                    spec = eval(filter_statements[filter_name])
+                    for subject in sf.filter(subjects_list, spec):
+                        subjects_per_filter.append(subject)
+                    filters_iter[filter_name] = SubjectsIterator(subjects_per_filter)
+
+        return filters_iter
 
     def apply_file_modifications(self, subject_handler):
         """Apply file modifications to a list of file paths"""
@@ -111,7 +153,7 @@ class FilterLogic(Handler):
 
         filters_iter = FiltersIterator()
         for filter_name, subjects in subject_handler.get_subjects_per_filters(
-                state='file_modifications', attribute=None
+            state='file_modifications', attribute=None
         ).items():
             subjects_per_filter = []
             for subject in subjects:

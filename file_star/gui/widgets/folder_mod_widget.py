@@ -253,9 +253,11 @@ class FolderModWidget(FilterLogic):
         with ui.card() as card:
             ui.number(
                 label='Level',
-                value=self.folder_modifications[filter_name][folder_struct][mod_name]['level']
-                if self.folder_modifications[filter_name][folder_struct][mod_name] is not True
-                else None,
+                value=(
+                    self.folder_modifications[filter_name][folder_struct][mod_name]['level']
+                    if self.folder_modifications[filter_name][folder_struct][mod_name] is not True
+                    else None
+                ),
                 format='%d',
                 min=0,
                 on_change=lambda x, e=(filter_name, folder_struct, mod_name, 'level'): helper(*e, int(x.value)),
@@ -278,9 +280,11 @@ class FolderModWidget(FilterLogic):
             ui.input(
                 label='Folder name by search tags',
                 placeholder='tag_1 & (tag_2 | tag_3) & ~tag_4',
-                value=self.folder_modifications[filter_name][folder_struct][mod_name]['name']
-                if self.folder_modifications[filter_name][folder_struct][mod_name] is not True
-                else None,
+                value=(
+                    self.folder_modifications[filter_name][folder_struct][mod_name]['name']
+                    if self.folder_modifications[filter_name][folder_struct][mod_name] is not True
+                    else None
+                ),
                 on_change=lambda x, e=(filter_name, folder_struct, mod_name, 'name'): helper(*e, x.value),
             ).tooltip(
                 'use logic operators & for and, | for or, ~ for not, '
@@ -306,9 +310,11 @@ class FolderModWidget(FilterLogic):
             ui.input(
                 label='Create new folder name',
                 placeholder='tag_1 & (tag_2 | tag_3) & ~tag_4',
-                value=self.folder_modifications[filter_name][folder_struct][mod_name]['name']
-                if self.folder_modifications[filter_name][folder_struct][mod_name] is not True
-                else None,
+                value=(
+                    self.folder_modifications[filter_name][folder_struct][mod_name]['name']
+                    if self.folder_modifications[filter_name][folder_struct][mod_name] is not True
+                    else None
+                ),
                 on_change=lambda x, e=(filter_name, folder_struct, mod_name, 'name'): helper(*e, x.value),
             ).classes('w-full no-wrap')
         return card

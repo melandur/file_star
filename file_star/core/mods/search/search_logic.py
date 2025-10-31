@@ -1,6 +1,7 @@
 import os
 import re
 from abc import ABC, abstractmethod
+from functools import lru_cache
 
 from loguru import logger
 
@@ -23,6 +24,15 @@ class Specification(ABC):
     def __invert__(self):
         """Overload the ~ operator to check if any specification is satisfied"""
         return NotSpecification(self)
+
+
+@lru_cache(maxsize=128)
+def _compile_regex(pattern: str):
+    """Cache compiled regex patterns"""
+    try:
+        return re.compile(pattern)
+    except re.error:
+        return None
 
 
 class AndSpecification(Specification):
@@ -68,18 +78,24 @@ class FileName(Specification):
 
     def __init__(self, *args) -> None:
         self.file_names = args
+        # Pre-compile regex patterns for better performance
+        self._compiled_patterns = []
+        for pattern in self.file_names:
+            compiled = _compile_regex(pattern)
+            if compiled is not None:
+                self._compiled_patterns.append(compiled)
+            else:
+                logger.warning(f"Invalid regex pattern for file names: {pattern}")
 
     def is_satisfied(self, subject) -> bool:
         """Check if a file name is satisfied by a specification"""
-        for file_name in self.file_names:
+        for pattern in self._compiled_patterns:
             try:
-                if (
-                    bool(re.search(file_name, subject.file_base_name))
-                    and re.search(file_name, subject.file_base_name).group() != ''
-                ):
+                match = pattern.search(subject.file_base_name)
+                if match and match.group() != '':
                     return True
-            except re.error as e:
-                logger.warning(f"Regex error occurred for file names: {e}")
+            except Exception as e:
+                logger.warning(f"Error matching file name pattern: {e}")
         return False
 
 
@@ -88,17 +104,26 @@ class FolderNames(Specification):
 
     def __init__(self, *args) -> None:
         self.folder_name = args
+        # Pre-compile regex patterns for better performance
+        self._compiled_patterns = []
+        for pattern in self.folder_name:
+            compiled = _compile_regex(pattern)
+            if compiled is not None:
+                self._compiled_patterns.append(compiled)
+            else:
+                logger.warning(f"Invalid regex pattern for folder names: {pattern}")
 
     def is_satisfied(self, subject) -> bool:
         """Check if a folder name is satisfied by a specification"""
         folders = subject.folder_path_rel.split(os.sep)
-        for folder_name in self.folder_name:
+        for pattern in self._compiled_patterns:
             for folder in folders:
                 try:
-                    if bool(re.search(folder_name, folder)) and re.search(folder_name, folder).group() != '':
+                    match = pattern.search(folder)
+                    if match and match.group() != '':
                         return True
-                except re.error as e:
-                    logger.warning(f"Regex error occurred for folder names: {e}")
+                except Exception as e:
+                    logger.warning(f"Error matching folder name pattern: {e}")
         return False
 
 
@@ -107,18 +132,24 @@ class Extension(Specification):
 
     def __init__(self, *args) -> None:
         self.extension = args
+        # Pre-compile regex patterns for better performance
+        self._compiled_patterns = []
+        for pattern in self.extension:
+            compiled = _compile_regex(pattern)
+            if compiled is not None:
+                self._compiled_patterns.append(compiled)
+            else:
+                logger.warning(f"Invalid regex pattern for extensions: {pattern}")
 
     def is_satisfied(self, subject) -> bool:
         """Check if an extension is satisfied by a specification"""
-        for extension in self.extension:
+        for pattern in self._compiled_patterns:
             try:
-                if (
-                    bool(re.search(extension, subject.extension))
-                    and re.search(extension, subject.extension).group() != ''
-                ):
+                match = pattern.search(subject.extension)
+                if match and match.group() != '':
                     return True
-            except re.error as e:
-                logger.warning(f"Regex error occurred for extension: {e}")
+            except Exception as e:
+                logger.warning(f"Error matching extension pattern: {e}")
         return False
 
 

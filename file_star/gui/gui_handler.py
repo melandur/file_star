@@ -52,61 +52,69 @@ class GuiHelper:
         self._tree_gui = value
 
     def _get_tree_format(self, path_type) -> dict | None:
-        """Convert a list of file paths into a tree structure"""
+        """Convert a list of file paths into a tree structure (optimized)"""
 
         if getattr(self.filters_handler, self.state) is None:
             return None
 
-        tree_format = {}
-
         subjects = self.filters_handler.get_subjects_per_state(self.state)
 
+        # Extract file paths more efficiently
         file_paths = []
         for subject in subjects:
-            if getattr(subject, path_type):
-                file_paths.append(getattr(subject, path_type))
-            else:
-                file_paths.append(subject.file_path_rel)
+            path = getattr(subject, path_type, None) or subject.file_path_rel
+            file_paths.append(path)
+
+        if not file_paths:
+            self._tree_format = []
+            return None
 
         file_paths.sort()
 
+        # Optimized tree building using nested dictionaries
+        tree_dict = {}
+
         for file_path_rel in file_paths:
             parts = file_path_rel.split(os.sep)
-            current_node = tree_format
+            current = tree_dict
 
             for part in parts:
-                if 'children' not in current_node:
-                    current_node['children'] = []
+                if part not in current:
+                    current[part] = {}
+                current = current[part]
 
-                child_id = {'id': part}
-                existing_child = next((child for child in current_node['children'] if child['id'] == part), None)
+        # Convert nested dict to tree format
+        def dict_to_tree(d, path_so_far=None):
+            """Convert nested dictionary to tree format"""
+            result = []
+            for key, value in sorted(d.items()):
+                node = {'id': key}
+                if value:  # Has children
+                    node['children'] = dict_to_tree(value, f"{path_so_far}/{key}" if path_so_far else key)
+                result.append(node)
+            return result
 
-                if existing_child:
-                    current_node = existing_child
-                else:
-                    current_node['children'].append(child_id)
-                    current_node = child_id
-
-        self._tree_format = self.count_children(tree_format.get('children', []))
+        tree_format = dict_to_tree(tree_dict)
+        self._tree_format = self.count_children(tree_format)
 
     @staticmethod
     def count_children(data):
-        """Count the number of children and grandchildren in a tree structure"""
+        """Count the number of children and grandchildren in a tree structure (optimized)"""
 
         def count_descendants(item):
             """Count the number of children and grandchildren in a tree structure"""
-
-            if 'children' in item and len(item['children']) > 0:
-                for child in item['children']:
-                    grandchildren_count = len(child.get('children', []))
-                    if grandchildren_count > 0:
-                        child['id'] = f"{child['id']} [ {grandchildren_count} ]"
+            if 'children' in item and item['children']:
+                children_count = len(item['children'])
+                if children_count > 0:
+                    item['id'] = f"{item['id']} [ {children_count} ]"
+                    for child in item['children']:
                         count_descendants(child)
 
         for item in data:
-            children_count = len(item.get('children', []))
-            if children_count > 0:
-                item['id'] = f"{item['id']} [ {len(item.get('children', []))} ]"
-            count_descendants(item)
+            if 'children' in item and item['children']:
+                children_count = len(item['children'])
+                if children_count > 0:
+                    item['id'] = f"{item['id']} [ {children_count} ]"
+                count_descendants(item)
 
         return data

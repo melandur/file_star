@@ -159,9 +159,11 @@ class FileModWidget(FilterLogic):
 
         with ui.card() as card:
             ui.input(
-                value=self.file_modifications[filter_name][mod_name]['name']
-                if self.file_modifications[filter_name][mod_name] is not True
-                else None,
+                value=(
+                    self.file_modifications[filter_name][mod_name]['name']
+                    if self.file_modifications[filter_name][mod_name] is not True
+                    else None
+                ),
                 on_change=lambda x, e=(filter_name, mod_name, 'name'): helper(*e, x.value),
             ).classes('w-full no-wrap')
         return card
